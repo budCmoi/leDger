@@ -3,7 +3,7 @@ services:
     name: ledger-premium-budcmoi
     runtime: node
     plan: free
-    buildCommand: npm ci && npm run build
+    buildCommand: npm ci --include=dev && npm run build
     startCommand: npm run start --workspace backend
     healthCheckPath: /healthz
     autoDeployTrigger: commit
