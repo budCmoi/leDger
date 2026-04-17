@@ -1,0 +1,15 @@
+import { Button } from '../components/common/Button';
+import { Card } from '../components/common/Card';
+
+export default function NotFoundPage() {
+  return (
+    <div className="flex min-h-screen items-center justify-center bg-paper px-6">
+      <Card className="max-w-xl space-y-6 text-center">
+        <p className="premium-label">404</p>
+        <h1 className="text-3xl uppercase tracking-[0.18em] text-white">Page not found</h1>
+        <p className="text-sm leading-7 text-white/55">The page you requested does not exist in the current Ledger Premium route map.</p>
+        <Button onClick={() => window.location.assign('/')}>Return home</Button>
+      </Card>
+    </div>
+  );
+}

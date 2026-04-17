@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top, rgba(245, 198, 91, 0.2), transparent 34%),
+    radial-gradient(circle at 80% 15%, rgba(91, 192, 255, 0.16), transparent 22%),
+    linear-gradient(180deg, #050505 0%, #090909 38%, #050505 100%);
+  font-family: 'Space Mono', monospace;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: #050505;
+  color: #ffffff;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.7), transparent 90%);
+  opacity: 0.28;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(245, 198, 91, 0.38);
+  border-radius: 999px;
+}
+
+@layer components {
+  .premium-shell {
+    @apply min-h-screen bg-grain text-ink;
+  }
+
+  .premium-panel {
+    @apply rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-soft backdrop-blur-xl;
+  }
+
+  .premium-grid {
+    @apply grid gap-5 md:gap-6;
+  }
+
+  .premium-label {
+    @apply text-[11px] uppercase tracking-[0.35em] text-white/50;
+  }
+}
