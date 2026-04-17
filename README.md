@@ -128,6 +128,21 @@ npm run build
 
 Backend output is generated in backend/dist and frontend output in frontend/dist.
 
+## Deploy on Render
+
+This repository includes a Render blueprint at [render.yaml](render.yaml).
+
+1. Push this repository to GitHub.
+2. In Render, create a new **Blueprint** and select this repository.
+3. Render will create:
+   - `ledger-backend` (Node web service)
+   - `ledger-frontend` (static site)
+4. Set all backend secrets marked with `sync: false` in `render.yaml`.
+5. Update these values after services are created:
+   - `CLIENT_URL` (backend) to your real frontend URL
+   - `VITE_API_URL` (frontend) to your real backend URL + `/api`
+   - `GOOGLE_CALLBACK_URL` to `https://<your-backend-domain>/api/auth/google/callback`
+
 ## Notes
 
 - The frontend API base URL defaults to http://localhost:4000/api.
