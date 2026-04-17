@@ -3,18 +3,20 @@ import { Schema, model } from 'mongoose';
 import { DEFAULT_CURRENCY, USER_ROLES, type UserRole } from '../constants/app';
 
 export interface IUser {
-  googleId: string;
+  firebaseUid: string;
   email: string;
+  emailVerified: boolean;
   name: string;
   avatar?: string;
   companyName: string;
   role: UserRole;
   currency: string;
+  lastLoginAt?: Date;
 }
 
 const userSchema = new Schema<IUser>(
   {
-    googleId: {
+    firebaseUid: {
       type: String,
       required: true,
       unique: true,
@@ -26,6 +28,11 @@ const userSchema = new Schema<IUser>(
       unique: true,
       trim: true,
       lowercase: true,
+    },
+    emailVerified: {
+      type: Boolean,
+      required: true,
+      default: true,
     },
     name: {
       type: String,
@@ -51,6 +58,9 @@ const userSchema = new Schema<IUser>(
       type: String,
       default: DEFAULT_CURRENCY,
       trim: true,
+    },
+    lastLoginAt: {
+      type: Date,
     },
   },
   {

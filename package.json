@@ -7,6 +7,9 @@
     "backend"
   ],
   "scripts": {
+    "db:up": "sh -c 'if command -v docker-compose >/dev/null 2>&1; then docker-compose up -d mongo; elif command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then docker compose up -d mongo; else echo \"Docker Compose is required to start MongoDB. Install Docker Desktop or run your own MongoDB instance.\"; exit 1; fi'",
+    "db:down": "sh -c 'if command -v docker-compose >/dev/null 2>&1; then docker-compose down; elif command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then docker compose down; else echo \"Docker Compose is required to stop MongoDB.\"; exit 1; fi'",
+    "db:logs": "sh -c 'if command -v docker-compose >/dev/null 2>&1; then docker-compose logs -f mongo; elif command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then docker compose logs -f mongo; else echo \"Docker Compose is required to read MongoDB logs.\"; exit 1; fi'",
     "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
     "build": "npm run build --workspace backend && npm run build --workspace frontend",
     "typecheck": "npm run typecheck --workspace backend && npm run typecheck --workspace frontend"

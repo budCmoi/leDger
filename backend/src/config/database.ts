@@ -22,5 +22,18 @@ const resolveMongoUri = async () => {
 export const connectDatabase = async () => {
   mongoose.set('strictQuery', true);
   const mongoUri = await resolveMongoUri();
-  await mongoose.connect(mongoUri);
+
+  try {
+    await mongoose.connect(mongoUri);
+  } catch (error) {
+    if (env.USE_IN_MEMORY_DB) {
+      throw new Error('Unable to start the in-memory MongoDB instance. Configure a real MongoDB server for persistent development data.', {
+        cause: error,
+      });
+    }
+
+    throw new Error('Unable to connect to MongoDB. Make sure MONGODB_URI points to a running MongoDB instance.', {
+      cause: error,
+    });
+  }
 };

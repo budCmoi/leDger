@@ -8,7 +8,6 @@ import type { IUser } from '../models/User';
 
 type ProfileUpdatePayload = {
   name?: string;
-  email?: string;
   companyName?: string;
   currency?: string;
   avatar?: string;
@@ -33,10 +32,6 @@ export const updateCurrentUser = asyncHandler(async (req, res) => {
 
   if (payload.name) {
     user.name = payload.name;
-  }
-
-  if (payload.email) {
-    user.email = payload.email.toLowerCase();
   }
 
   if (payload.companyName) {

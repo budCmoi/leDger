@@ -26,7 +26,7 @@ export const Sidebar = ({ companyName, onNavigate }: SidebarProps) => {
           <p className="premium-label">Ledger Premium</p>
           <h2 className="mt-3 text-xl uppercase tracking-[0.32em] text-white">Accounting OS</h2>
         </div>
-        <Badge>{companyName ?? 'Google Workspace'}</Badge>
+        <Badge>{companyName ?? 'Secure Workspace'}</Badge>
       </div>
 
       <nav className="flex flex-1 flex-col gap-2">

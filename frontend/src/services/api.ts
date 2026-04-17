@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 import type {
   AdminOverview,
   AnnualReport,
+  AppBootstrap,
   DashboardSummary,
   Invoice,
   MonthlyReport,
@@ -12,7 +13,7 @@ import type {
 } from '../types';
 import { downloadBlob, readCookie } from '../lib/utils';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:4000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? '/api' : 'http://localhost:4000/api');
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -35,8 +36,15 @@ export const isUnauthorizedError = (error: unknown) =>
   error instanceof AxiosError && error.response?.status === 401;
 
 export const authApi = {
-  startGoogleLogin: () => {
-    window.location.assign(`${API_BASE_URL}/auth/google`);
+  createFirebaseSession: async (payload: {
+    idToken: string;
+    profile?: {
+      name?: string;
+      companyName?: string;
+    };
+  }) => {
+    const { data } = await apiClient.post<SessionResponse>('/auth/firebase/session', payload);
+    return data;
   },
   getSession: async () => {
     const { data } = await apiClient.get<SessionResponse>('/auth/session');
@@ -44,6 +52,24 @@ export const authApi = {
   },
   logout: async () => {
     await apiClient.post('/auth/logout');
+  },
+};
+
+export const bootstrapApi = {
+  loadAuthenticatedApp: async () => {
+    const session = await authApi.getSession();
+    const [dashboard, transactions, invoices] = await Promise.all([
+      dashboardApi.get(),
+      transactionApi.list(),
+      invoiceApi.list(),
+    ]);
+
+    return {
+      session,
+      dashboard,
+      transactions,
+      invoices,
+    } satisfies AppBootstrap;
   },
 };
 

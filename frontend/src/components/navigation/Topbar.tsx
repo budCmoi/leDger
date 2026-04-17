@@ -1,9 +1,10 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react';
 import { LogOut, Menu as MenuIcon, Search } from 'lucide-react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Button } from '../common/Button';
-import { authApi } from '../../services/api';
+import { firebaseAuthService } from '../../services/firebase-auth';
 import { useAppStore } from '../../store/useAppStore';
 
 const titleMap: Record<string, string> = {
@@ -24,11 +25,18 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
   const navigate = useNavigate();
   const user = useAppStore((state) => state.user);
   const clearSession = useAppStore((state) => state.clearSession);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   const handleLogout = async () => {
-    await authApi.logout();
-    clearSession();
-    navigate('/');
+    setLoggingOut(true);
+
+    try {
+      await firebaseAuthService.logout();
+    } finally {
+      clearSession();
+      navigate('/', { replace: true });
+      setLoggingOut(false);
+    }
   };
 
   return (
@@ -67,9 +75,9 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
                 </button>
               </MenuItem>
               <MenuItem>
-                <Button className="mt-2 justify-start rounded-2xl px-4 py-3 text-left text-sm" fullWidth onClick={handleLogout} variant="ghost">
+                <Button className="mt-2 justify-start rounded-2xl px-4 py-3 text-left text-sm" disabled={loggingOut} fullWidth onClick={handleLogout} variant="ghost">
                   <LogOut size={15} />
-                  Log out
+                  {loggingOut ? 'Closing session' : 'Log out'}
                 </Button>
               </MenuItem>
             </MenuItems>

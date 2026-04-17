@@ -1,44 +1,38 @@
 services:
   - type: web
-    name: ledger-backend
+    name: ledger-premium-budcmoi
     runtime: node
-    rootDir: backend
     plan: free
     buildCommand: npm ci && npm run build
-    startCommand: npm run start
+    startCommand: npm run start --workspace backend
+    healthCheckPath: /healthz
+    autoDeployTrigger: commit
     envVars:
       - key: NODE_ENV
         value: production
       - key: PORT
         value: 10000
       - key: CLIENT_URL
-        value: https://ledger-frontend.onrender.com
-      - key: JWT_SECRET
         sync: false
-      - key: JWT_EXPIRES_IN
-        value: 7d
+      - key: VITE_API_URL
+        value: /api
       - key: MONGODB_URI
         sync: false
-      - key: GOOGLE_CLIENT_ID
-        sync: false
-      - key: GOOGLE_CLIENT_SECRET
-        sync: false
-      - key: GOOGLE_CALLBACK_URL
-        sync: false
-      - key: CLOUDINARY_CLOUD_NAME
-        sync: false
-      - key: CLOUDINARY_API_KEY
-        sync: false
-      - key: CLOUDINARY_API_SECRET
-        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: FIREBASE_PROJECT_ID
+        value: compta-b4e23
       - key: ADMIN_EMAILS
-        sync: false
-
-staticSites:
-  - name: ledger-frontend
-    rootDir: frontend
-    buildCommand: npm ci && npm run build
-    publishPath: dist
-    envVars:
-      - key: VITE_API_URL
-        value: https://ledger-backend.onrender.com/api
+        value: ''
+      - key: VITE_FIREBASE_API_KEY
+        value: AIzaSyAMbLiRzqEEkFp1cKM7MC-Wp5dRVxqET2s
+      - key: VITE_FIREBASE_AUTH_DOMAIN
+        value: compta-b4e23.firebaseapp.com
+      - key: VITE_FIREBASE_PROJECT_ID
+        value: compta-b4e23
+      - key: VITE_FIREBASE_APP_ID
+        value: 1:467150472454:web:b365788cc1108a39b24a87
+      - key: VITE_FIREBASE_MESSAGING_SENDER_ID
+        value: '467150472454'

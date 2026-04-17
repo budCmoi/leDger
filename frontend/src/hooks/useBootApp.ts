@@ -1,6 +1,7 @@
 import { startTransition, useEffect, useRef } from 'react';
 
-import { authApi, dashboardApi, invoiceApi, isUnauthorizedError, transactionApi } from '../services/api';
+import { bootstrapApi, isUnauthorizedError } from '../services/api';
+import { firebaseAuthService } from '../services/firebase-auth';
 import { useAppStore } from '../store/useAppStore';
 
 export const useBootApp = () => {
@@ -11,6 +12,15 @@ export const useBootApp = () => {
   const setTransactions = useAppStore((state) => state.setTransactions);
   const setInvoices = useAppStore((state) => state.setInvoices);
 
+  const applyBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadAuthenticatedApp>>) => {
+    startTransition(() => {
+      setAuthSession(payload.session);
+      setDashboard(payload.dashboard);
+      setTransactions(payload.transactions);
+      setInvoices(payload.invoices);
+    });
+  };
+
   useEffect(() => {
     if (hasBootedRef.current) {
       return;
@@ -20,31 +30,36 @@ export const useBootApp = () => {
 
     const boot = async () => {
       try {
-        const session = await authApi.getSession();
-        const [dashboard, transactions, invoices] = await Promise.all([
-          dashboardApi.get(),
-          transactionApi.list(),
-          invoiceApi.list(),
-        ]);
-
-        startTransition(() => {
-          setAuthSession(session);
-          setDashboard(dashboard);
-          setTransactions(transactions);
-          setInvoices(invoices);
-        });
+        applyBootstrap(await bootstrapApi.loadAuthenticatedApp());
       } catch (error) {
-        if (isUnauthorizedError(error)) {
+        if (!isUnauthorizedError(error)) {
+          console.error(error);
           startTransition(() => {
             setUnauthenticated();
           });
           return;
         }
 
-        console.error(error);
-        startTransition(() => {
-          setUnauthenticated();
-        });
+        try {
+          const restoredSession = await firebaseAuthService.restoreSession();
+
+          if (!restoredSession) {
+            startTransition(() => {
+              setUnauthenticated();
+            });
+            return;
+          }
+
+          applyBootstrap(restoredSession);
+        } catch (restoreError) {
+          if (!isUnauthorizedError(restoreError)) {
+            console.error(restoreError);
+          }
+
+          startTransition(() => {
+            setUnauthenticated();
+          });
+        }
       }
     };
 

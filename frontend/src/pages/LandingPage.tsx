@@ -1,28 +1,33 @@
 import { motion } from 'framer-motion';
 import { ArrowRight, LockKeyhole, ShieldCheck, Sparkles } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import { Badge } from '../components/common/Badge';
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { SiteFooter } from '../components/common/SiteFooter';
-import { authApi } from '../services/api';
 import { useAppStore } from '../store/useAppStore';
 
 const showcaseMetrics = [
   { label: 'Revenue visibility', value: '24/7' },
   { label: 'Protected admin access', value: 'RBAC' },
-  { label: 'Google authentication', value: 'OAuth' },
+  { label: 'Firebase authentication', value: 'Email/Password' },
 ];
 
 const features = [
   'Live cash overview with premium charting',
   'Transactions, invoices and downloadable reports',
   'Role-based admin panel behind a private route',
-  'JWT, CSRF-aware requests, rate limiting and sanitization',
+  'Firebase Auth, JWT cookies, CSRF-aware requests and sanitization',
 ];
 
 export default function LandingPage() {
   const authStatus = useAppStore((state) => state.authStatus);
+  const navigate = useNavigate();
+
+  const handlePrimaryAction = () => {
+    navigate(authStatus === 'authenticated' ? '/dashboard' : '/login');
+  };
 
   return (
     <div className="premium-shell overflow-hidden">
@@ -34,8 +39,8 @@ export default function LandingPage() {
           </div>
           <div className="flex items-center gap-3">
             <Badge>Black / White / Yellow</Badge>
-            <Button onClick={() => (authStatus === 'authenticated' ? window.location.assign('/dashboard') : authApi.startGoogleLogin())}>
-              {authStatus === 'authenticated' ? 'Open workspace' : 'Continue with Google'}
+            <Button onClick={handlePrimaryAction}>
+              {authStatus === 'authenticated' ? 'Open workspace' : 'Open sign in'}
             </Button>
           </div>
         </header>
@@ -48,11 +53,14 @@ export default function LandingPage() {
                 Minimal accounting for operators who expect luxury-grade execution.
               </h1>
               <p className="mt-6 max-w-2xl text-sm leading-8 text-white/60 md:text-base">
-                Ledger Premium fuses modern financial tooling, secure Google authentication and a showroom-caliber interface inspired by fashion houses and award-winning digital brands.
+                Ledger Premium fuses modern financial tooling, Firebase-authenticated access and a showroom-caliber interface inspired by fashion houses and award-winning digital brands.
+              </p>
+              <p className="mt-4 max-w-2xl text-xs uppercase tracking-[0.24em] text-white/40">
+                Sign in and sign up run through Firebase Auth while workspace data remains stored in MongoDB.
               </p>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
-                <Button onClick={() => authApi.startGoogleLogin()}>
-                  Google OAuth sign in
+                <Button onClick={() => navigate('/login')}>
+                  Go to sign in
                   <ArrowRight size={16} />
                 </Button>
                 <Button onClick={() => window.location.assign('#about')} variant="secondary">

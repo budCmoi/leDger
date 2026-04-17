@@ -6,6 +6,7 @@ export const ProtectedRoute = () => {
   const location = useLocation();
   const authStatus = useAppStore((state) => state.authStatus);
   const bootstrapped = useAppStore((state) => state.bootstrapped);
+  const nextPath = `${location.pathname}${location.search}${location.hash}`;
 
   if (!bootstrapped || authStatus === 'loading') {
     return (
@@ -19,7 +20,7 @@ export const ProtectedRoute = () => {
   }
 
   if (authStatus !== 'authenticated') {
-    return <Navigate replace state={{ from: location }} to="/" />;
+    return <Navigate replace to={`/login?next=${encodeURIComponent(nextPath)}`} />;
   }
 
   return <Outlet />;

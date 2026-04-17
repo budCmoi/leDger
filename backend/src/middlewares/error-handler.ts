@@ -31,6 +31,13 @@ export const errorHandler: ErrorRequestHandler = (error, _req, res, _next) => {
     });
   }
 
+  if (error instanceof mongoose.mongo.MongoServerError && error.code === 11000) {
+    return res.status(409).json({
+      message: 'A record with the same unique value already exists',
+      details: error.keyValue,
+    });
+  }
+
   const appError = error instanceof AppError ? error : new AppError(500, 'Internal server error');
 
   return res.status(appError.statusCode).json({

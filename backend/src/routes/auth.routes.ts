@@ -1,35 +1,18 @@
 import { Router } from 'express';
-import passport from 'passport';
 
 import {
-  ensureGoogleAuthConfigured,
+  createFirebaseSession,
+  ensureFirebaseAuthConfigured,
   getSession,
-  handleGoogleCallbackSuccess,
   logout,
 } from '../controllers/auth.controller';
 import { requireAuth, requireCsrf } from '../middlewares/auth';
+import { validate } from '../middlewares/validate';
+import { createFirebaseSessionSchema } from '../validators/auth.validators';
 
 const authRouter = Router();
 
-authRouter.get(
-  '/google',
-  ensureGoogleAuthConfigured,
-  passport.authenticate('google', {
-    session: false,
-    scope: ['profile', 'email'],
-    prompt: 'select_account',
-  }),
-);
-
-authRouter.get(
-  '/google/callback',
-  ensureGoogleAuthConfigured,
-  passport.authenticate('google', {
-    session: false,
-    failureRedirect: '/',
-  }),
-  handleGoogleCallbackSuccess,
-);
+authRouter.post('/firebase/session', ensureFirebaseAuthConfigured, validate(createFirebaseSessionSchema), createFirebaseSession);
 
 authRouter.get('/session', requireAuth, getSession);
 authRouter.post('/logout', requireAuth, requireCsrf, logout);

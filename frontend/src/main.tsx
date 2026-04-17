@@ -9,6 +9,7 @@ import { AppLayout } from './layouts/AppLayout';
 import './index.css';
 
 const LandingPage = lazy(() => import('./pages/LandingPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const TransactionsPage = lazy(() => import('./pages/TransactionsPage'));
 const InvoicesPage = lazy(() => import('./pages/InvoicesPage'));
@@ -34,6 +35,7 @@ const App = () => {
       <Suspense fallback={<LoadingScreen />}>
         <Routes>
           <Route element={<LandingPage />} path="/" />
+          <Route element={<LoginPage />} path="/login" />
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route element={<DashboardPage />} path="/dashboard" />

@@ -14,7 +14,6 @@ const currencies = ['USD', 'EUR', 'GBP', 'AED'];
 
 const profileFormSchema = z.object({
   name: z.string().min(2),
-  email: z.string().email(),
   companyName: z.string().min(2),
   currency: z.string().min(3).max(5),
   avatar: z.string().url().optional().or(z.literal('')),
@@ -37,7 +36,6 @@ export const ProfileForm = ({ busy, onSubmit, onUploadAvatar, user }: ProfileFor
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: user.name,
-      email: user.email,
       companyName: user.companyName,
       currency: user.currency,
       avatar: user.avatar ?? '',
@@ -57,7 +55,10 @@ export const ProfileForm = ({ busy, onSubmit, onUploadAvatar, user }: ProfileFor
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid gap-4 md:grid-cols-2">
         <input className={inputClassName} placeholder="Full name" {...form.register('name')} />
-        <input className={inputClassName} placeholder="Email" {...form.register('email')} />
+        <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/70">
+          <p className="text-[11px] uppercase tracking-[0.22em] text-white/35">Authentication email</p>
+          <p className="mt-2 break-all text-white">{user.email}</p>
+        </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
