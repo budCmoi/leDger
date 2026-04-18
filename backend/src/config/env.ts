@@ -81,5 +81,5 @@ if (env.NODE_ENV === 'production' && env.USE_IN_MEMORY_DB) {
 }
 
 if (env.NODE_ENV === 'production' && !isFirebaseAuthConfigured) {
-  throw new Error('FIREBASE_PROJECT_ID must be configured in production.');
+  console.warn('⚠️  FIREBASE_PROJECT_ID is not set – Firebase authentication will be disabled.');
 }
