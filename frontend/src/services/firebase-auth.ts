@@ -1,8 +1,8 @@
 import type { AxiosError } from 'axios';
 import { FirebaseError } from 'firebase/app';
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
 
-import { ensureFirebaseAuth, firebaseAuth, isFirebaseClientConfigured, waitForFirebaseAuthReady } from '../lib/firebase';
+import { ensureFirebaseAuth, firebaseAuth, googleAuthProvider, isFirebaseClientConfigured, waitForFirebaseAuthReady } from '../lib/firebase';
 import type { AppBootstrap } from '../types';
 import { authApi, bootstrapApi } from './api';
 
@@ -51,6 +51,11 @@ export const firebaseAuthService = {
   signIn: async (email: string, password: string): Promise<AppBootstrap> => {
     const auth = ensureFirebaseAuth();
     await signInWithEmailAndPassword(auth, email, password);
+    return exchangeCurrentFirebaseSession();
+  },
+  signInWithGoogle: async (): Promise<AppBootstrap> => {
+    const auth = ensureFirebaseAuth();
+    await signInWithPopup(auth, googleAuthProvider);
     return exchangeCurrentFirebaseSession();
   },
   signUp: async ({ companyName, email, name, password }: SignUpPayload): Promise<AppBootstrap> => {

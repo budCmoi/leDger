@@ -1,12 +1,12 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
-import { getAuth, onAuthStateChanged, type Auth } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, onAuthStateChanged, type Auth } from 'firebase/auth';
 
 const firebaseClientConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || 'AIzaSyAMbLiRzqEEkFp1cKM7MC-Wp5dRVxqET2s',
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || 'compta-b4e23.firebaseapp.com',
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || 'compta-b4e23',
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || '1:467150472454:web:b365788cc1108a39b24a87',
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || '467150472454',
 };
 
 export const isFirebaseClientConfigured = [
@@ -23,6 +23,8 @@ const firebaseApp = isFirebaseClientConfigured
   : null;
 
 export const firebaseAuth = firebaseApp ? getAuth(firebaseApp) : null;
+
+export const googleAuthProvider = new GoogleAuthProvider();
 
 export const ensureFirebaseAuth = (): Auth => {
   if (!firebaseAuth) {
