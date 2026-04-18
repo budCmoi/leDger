@@ -77,7 +77,7 @@ export const isCloudinaryConfigured = Boolean(
 );
 
 if (env.NODE_ENV === 'production' && env.USE_IN_MEMORY_DB) {
-  throw new Error('USE_IN_MEMORY_DB cannot be enabled in production. Use a persistent MongoDB instance.');
+  console.warn('⚠️  USE_IN_MEMORY_DB is enabled in production – data will NOT persist across restarts.');
 }
 
 if (env.NODE_ENV === 'production' && !isFirebaseAuthConfigured) {
