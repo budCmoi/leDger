@@ -15,8 +15,10 @@ export const AppLayout = () => {
   return (
     <div className="premium-shell">
       <div className="mx-auto flex min-h-screen max-w-[1700px] gap-6 px-4 py-4 md:px-6">
-        <div className="premium-panel hidden w-[320px] overflow-hidden lg:block">
-          <Sidebar companyName={user?.companyName} />
+        <div className="sticky top-4 hidden h-[calc(100vh-2rem)] w-[320px] shrink-0 overflow-hidden lg:block">
+          <div className="premium-panel h-full overflow-y-auto">
+            <Sidebar companyName={user?.companyName} />
+          </div>
         </div>
 
         <Dialog className="relative z-50 lg:hidden" open={mobileOpen} onClose={setMobileOpen}>

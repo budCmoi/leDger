@@ -39,8 +39,8 @@ export default function DashboardPage() {
           <StatCard currency={user.currency} label="Profit" tone="neutral" value={dashboard.totals.profit} />
         </div>
 
-        <div className="premium-grid xl:grid-cols-[1.2fr_0.8fr]">
-          <Card>
+        <div className="premium-grid lg:grid-cols-[1.2fr_0.8fr]">
+          <Card className="min-w-0">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="premium-label">Monthly income</p>
@@ -48,12 +48,12 @@ export default function DashboardPage() {
               </div>
               <Badge>Live</Badge>
             </div>
-            <div className="h-80">
+            <div className="h-80 min-w-0">
               <RevenueLineChart points={dashboard.monthlyIncome} />
             </div>
           </Card>
 
-          <Card>
+          <Card className="min-w-0">
             <div className="mb-6 flex items-center justify-between">
               <div>
                 <p className="premium-label">Expense split</p>
@@ -61,13 +61,13 @@ export default function DashboardPage() {
               </div>
               <Badge>12 months</Badge>
             </div>
-            <div className="h-80">
+            <div className="h-80 min-w-0">
               <ExpenseDoughnutChart categories={dashboard.expenseCategories} />
             </div>
           </Card>
         </div>
 
-        <div className="premium-grid xl:grid-cols-[1.1fr_0.9fr]">
+        <div className="premium-grid lg:grid-cols-[1.1fr_0.9fr]">
           <Card>
             <div className="mb-6">
               <p className="premium-label">Financial trend</p>
