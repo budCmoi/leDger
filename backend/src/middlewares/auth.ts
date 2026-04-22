@@ -1,7 +1,7 @@
 import type { RequestHandler } from 'express';
 
 import { ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE, type UserRole } from '../constants/app';
-import { User } from '../models/User';
+import { prisma } from '../lib/prisma';
 import { verifyAccessToken } from '../services/token.service';
 import { asyncHandler } from '../utils/async-handler';
 import { AppError } from '../utils/app-error';
@@ -22,13 +22,25 @@ export const requireAuth = asyncHandler(async (req, _res, next) => {
   }
 
   const payload = verifyAccessToken(token);
-  const user = await User.findById(payload.sub);
+  const user = await prisma.user.findUnique({
+    where: {
+      id: payload.sub,
+    },
+  });
 
-  if (!user) {
+  if (!user || !user.isActive) {
     throw new AppError(401, 'Session expired');
   }
 
-  req.user = user as unknown as Express.User;
+  req.user = {
+    _id: user.id,
+    id: user.id,
+    identifier: user.identifier,
+    fullName: user.fullName,
+    name: user.fullName,
+    role: user.role,
+    isActive: user.isActive,
+  };
   next();
 });
 

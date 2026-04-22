@@ -1,6 +1,6 @@
-# Ledger Premium SaaS
+# Ledger Premium Restaurant Ops
 
-Modern accounting SaaS monorepo with a premium React frontend and a secure Express API.
+Monorepo React + Express pour la gestion restauration avec Prisma obligatoire, PostgreSQL, sessions JWT HTTP-only et synchronisation temps reel via Socket.IO.
 
 ## Stack
 
@@ -8,7 +8,7 @@ Modern accounting SaaS monorepo with a premium React frontend and a secure Expre
 - Backend: Express 4, TypeScript, Mongoose, Firebase ID token verification, JWT, Helmet, rate limiting
 - Reporting: Chart.js, jsPDF, CSV export
 
-## Features
+## Fonctionnalites
 
 - Firebase Auth with email/password sign in and sign up
 - JWT session handling with protected routes
@@ -18,15 +18,16 @@ Modern accounting SaaS monorepo with a premium React frontend and a secure Expre
 - Private admin route at /admin-secret
 - Responsive premium UI
 
-## Project Structure
+## Structure
 
 ```text
 backend/
 frontend/
+docker-compose.yml
 package.json
 ```
 
-## Prerequisites
+## Prerequis
 
 - Node.js 20+
 - npm 10+
@@ -35,7 +36,7 @@ package.json
 
 The repository includes a docker-compose MongoDB service so local development can use a real persisted database immediately. If Docker is not available, point MONGODB_URI to an existing MongoDB server.
 
-## Installation
+1. Installer les dependances.
 
 ```bash
 npm install
@@ -62,12 +63,12 @@ Run frontend and backend together from the repository root:
 npm run dev
 ```
 
-Default URLs:
+URLs par defaut :
 
-- Frontend: http://localhost:5173
-- Backend: http://localhost:4000
+- Frontend : http://localhost:5173
+- Backend : http://localhost:4000
 
-If you change the backend port, also set VITE_API_URL for the frontend.
+## Scripts utiles
 
 Example with backend on port 4001:
 
@@ -162,15 +163,19 @@ npm run build
 npm run typecheck
 ```
 
-Backend:
+Backend :
 
 ```bash
 npm run dev --workspace backend
+npm run prisma:generate --workspace backend
+npm run prisma:push --workspace backend
+npm run prisma:migrate --workspace backend
+npm run prisma:deploy --workspace backend
 npm run build --workspace backend
 npm run typecheck --workspace backend
 ```
 
-Frontend:
+Frontend :
 
 ```bash
 npm run dev --workspace frontend
@@ -178,13 +183,48 @@ npm run build --workspace frontend
 npm run typecheck --workspace frontend
 ```
 
-## Production Build
+## Variables backend
 
-```bash
-npm run build
-```
+La configuration est centralisee dans [backend/src/config/env.ts](backend/src/config/env.ts).
 
-Backend output is generated in backend/dist and frontend output in frontend/dist.
+| Variable | Defaut | Usage |
+| --- | --- | --- |
+| NODE_ENV | development | Mode runtime |
+| PORT | 4000 | Port HTTP API |
+| CLIENT_URL | http://localhost:5173 | Origine frontend autorisee |
+| DATABASE_URL | postgresql://postgres:postgres@127.0.0.1:5432/ledger_restaurant | Connexion PostgreSQL |
+| JWT_SECRET | development-super-secret-key | Secret de signature JWT |
+| JWT_EXPIRES_IN | 7d | Duree de session |
+| DEFAULT_ADMIN_IDENTIFIER | admin | Identifiant admin par defaut |
+| DEFAULT_ADMIN_NAME | Administrateur | Nom admin par defaut |
+| DEFAULT_ADMIN_PASSWORD | admin123456 | Mot de passe admin par defaut |
+| DAILY_REVENUE_CAP | 3000 | Plafond journalier de recette estimee |
+| OUTPUT_REVENUE_MULTIPLIER | 1.9 | Coefficient de projection recette sur sortie |
+
+## Variables frontend
+
+| Variable | Defaut | Usage |
+| --- | --- | --- |
+| VITE_API_URL | http://localhost:4000/api | Base URL de l API |
+
+## Deploiement
+
+Architecture recommandee pour ce pivot :
+
+- Frontend sur Vercel
+- Backend sur Railway ou VPS Node
+- PostgreSQL gere sur Railway, Neon, Supabase ou autre hebergeur compatible
+
+Le fichier [render.yaml](render.yaml) reste disponible si tu veux quand meme deployer la pile sur Render avec un service Node unique qui sert aussi le frontend build.
+
+## Etat valide
+
+Validation deja executee dans ce repo :
+
+- typecheck backend : OK
+- typecheck frontend : OK
+- build backend : OK
+- build frontend : OK
 
 ## Notes
 

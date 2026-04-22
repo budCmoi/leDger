@@ -6,11 +6,14 @@ import { useAppStore } from '../store/useAppStore';
 
 export const useBootApp = () => {
   const hasBootedRef = useRef(false);
-  const setAuthSession = useAppStore((state) => state.setAuthSession);
+  const setRestaurantBootstrap = useAppStore((state) => state.setRestaurantBootstrap);
   const setUnauthenticated = useAppStore((state) => state.setUnauthenticated);
-  const setDashboard = useAppStore((state) => state.setDashboard);
-  const setTransactions = useAppStore((state) => state.setTransactions);
-  const setInvoices = useAppStore((state) => state.setInvoices);
+
+  const applyBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadRestaurantWorkspace>>) => {
+    startTransition(() => {
+      setRestaurantBootstrap(payload);
+    });
+  };
 
   const applyBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadAuthenticatedApp>>) => {
     startTransition(() => {
@@ -64,5 +67,5 @@ export const useBootApp = () => {
     };
 
     void boot();
-  }, [setAuthSession, setDashboard, setInvoices, setTransactions, setUnauthenticated]);
+  }, [setRestaurantBootstrap, setUnauthenticated]);
 };

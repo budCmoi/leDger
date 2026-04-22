@@ -1,14 +1,13 @@
-import type { Types } from 'mongoose';
-
-import type { IUser } from '../../models/User';
-
 declare global {
   namespace Express {
-    interface User extends IUser {
-      _id: Types.ObjectId;
+    interface User {
+      _id: string;
       id: string;
-      save: () => Promise<User>;
-      toObject: () => Record<string, unknown>;
+      identifier: string;
+      fullName: string;
+      name: string;
+      role: 'user' | 'admin';
+      isActive: boolean;
     }
 
     interface Request {

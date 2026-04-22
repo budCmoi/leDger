@@ -8,12 +8,12 @@ import { firebaseAuthService } from '../../services/firebase-auth';
 import { useAppStore } from '../../store/useAppStore';
 
 const titleMap: Record<string, string> = {
-  '/dashboard': 'Financial cockpit',
-  '/transactions': 'Transaction ledger',
-  '/invoices': 'Invoice studio',
-  '/reports': 'Reporting suite',
-  '/profile': 'Profile settings',
-  '/admin-secret': 'Admin control',
+  '/dashboard': 'Cockpit restauration',
+  '/products': 'Catalogue et stock',
+  '/purchase-invoices': 'Factures d entree',
+  '/outputs': 'Sorties de service',
+  '/journal': 'Journal quotidien',
+  '/admin': 'Console admin',
 };
 
 interface TopbarProps {
@@ -48,14 +48,14 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
           </button>
           <div>
             <p className="premium-label">{location.pathname.replace('/', '') || 'overview'}</p>
-            <h1 className="text-xl uppercase tracking-[0.22em] text-white">{titleMap[location.pathname] ?? 'Ledger Premium'}</h1>
+            <h1 className="text-xl uppercase tracking-[0.22em] text-white">{titleMap[location.pathname] ?? 'Restaurant Ops'}</h1>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
           <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-white/45 md:flex">
             <Search size={14} />
-            <span className="text-xs uppercase tracking-[0.18em]">Search manually in views</span>
+            <span className="text-xs uppercase tracking-[0.18em]">Saisie et supervision operationnelle</span>
           </div>
 
           <Menu as="div" className="relative">
@@ -65,7 +65,7 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
               </div>
               <div className="hidden sm:block">
                 <p className="text-sm uppercase tracking-[0.15em] text-white">{user?.name ?? 'Workspace'}</p>
-                <p className="text-xs text-white/45">{user?.companyName ?? 'Ledger Premium'}</p>
+                <p className="text-xs text-white/45">{user?.identifier ?? user?.companyName ?? 'Restaurant Ops'}</p>
               </div>
             </MenuButton>
             <MenuItems anchor="bottom end" className="premium-panel mt-3 w-56 p-2 outline-none">

@@ -1,10 +1,8 @@
 import type { RequestHandler } from 'express';
 
-import { uploadImageBuffer } from '../services/cloudinary.service';
+import { prisma } from '../lib/prisma';
 import { AppError } from '../utils/app-error';
 import { asyncHandler } from '../utils/async-handler';
-import { mapUser } from '../utils/serializers';
-import type { IUser } from '../models/User';
 
 type ProfileUpdatePayload = {
   name?: string;
@@ -18,20 +16,18 @@ export const getCurrentUser: RequestHandler = (req, res, next) => {
     return next(new AppError(401, 'Authentication required'));
   }
 
-  return res.json({ user: mapUser(req.user as unknown as Record<string, unknown>) });
+  return res.json({ user: mapProfileUser(req.user) });
 };
 
 export const updateCurrentUser = asyncHandler(async (req, res) => {
-  const user = req.user;
-
-  if (!user) {
+  if (!req.user) {
     throw new AppError(401, 'Authentication required');
   }
 
-  const payload = req.body as ProfileUpdatePayload;
+  const fullName = typeof req.body?.name === 'string' ? req.body.name.trim() : '';
 
-  if (payload.name) {
-    user.name = payload.name;
+  if (!fullName) {
+    throw new AppError(422, 'Name is required');
   }
 
   if (payload.companyName) {
@@ -52,9 +48,7 @@ export const updateCurrentUser = asyncHandler(async (req, res) => {
 });
 
 export const uploadAvatar = asyncHandler(async (req, res) => {
-  const user = req.user;
-
-  if (!user) {
+  if (!req.user) {
     throw new AppError(401, 'Authentication required');
   }
 
@@ -62,9 +56,5 @@ export const uploadAvatar = asyncHandler(async (req, res) => {
     throw new AppError(400, 'Avatar file is required');
   }
 
-  const avatarUrl = await uploadImageBuffer(req.file.buffer, `ledger-premium/users/${String((user as IUser & { _id: unknown })._id)}`);
-  user.avatar = avatarUrl;
-  await user.save();
-
-  res.json({ user: mapUser(user as unknown as Record<string, unknown>) });
+  throw new AppError(501, 'Avatar upload is not available in the PostgreSQL profile flow yet');
 });

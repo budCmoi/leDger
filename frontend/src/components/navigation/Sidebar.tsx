@@ -1,4 +1,4 @@
-import { LayoutDashboard, Receipt, ScrollText, Settings2, ShieldCheck, Wallet } from 'lucide-react';
+import { ChefHat, LayoutDashboard, Package, ReceiptText, ScrollText, ShieldCheck } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 import { Badge } from '../common/Badge';
@@ -6,11 +6,11 @@ import { cn } from '../../lib/utils';
 
 const navigationItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/transactions', label: 'Transactions', icon: Wallet },
-  { to: '/invoices', label: 'Invoices', icon: Receipt },
-  { to: '/reports', label: 'Reports', icon: ScrollText },
-  { to: '/profile', label: 'Profile', icon: Settings2 },
-  { to: '/admin-secret', label: 'Admin', icon: ShieldCheck },
+  { to: '/products', label: 'Produits', icon: Package },
+  { to: '/purchase-invoices', label: 'Entrees', icon: ReceiptText },
+  { to: '/outputs', label: 'Sorties', icon: ChefHat },
+  { to: '/journal', label: 'Journal', icon: ScrollText },
+  { to: '/admin', label: 'Admin', icon: ShieldCheck },
 ];
 
 interface SidebarProps {
@@ -24,7 +24,7 @@ export const Sidebar = ({ companyName, onNavigate }: SidebarProps) => {
       <div className="space-y-4">
         <div>
           <p className="premium-label">Ledger Premium</p>
-          <h2 className="mt-3 text-xl uppercase tracking-[0.32em] text-white">Accounting OS</h2>
+          <h2 className="mt-3 text-xl uppercase tracking-[0.32em] text-white">Restaurant Ops</h2>
         </div>
         <Badge>{companyName ?? 'Secure Workspace'}</Badge>
       </div>
@@ -55,9 +55,9 @@ export const Sidebar = ({ companyName, onNavigate }: SidebarProps) => {
       </nav>
 
       <div className="premium-panel space-y-3 p-4">
-        <p className="premium-label">Security</p>
+        <p className="premium-label">Flux</p>
         <p className="text-sm leading-7 text-white/55">
-          Session cookies, role-based access and CSRF-aware API calls are enabled by default.
+          Achats, sorties, journal quotidien et synchronisation temps reel sont centralises ici.
         </p>
       </div>
     </aside>

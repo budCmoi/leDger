@@ -1,6 +1,11 @@
 node_modules
 dist
+.npm-cache
+.tmp-npm-cache
 .env
 .env.*
+!.env.example
+!backend/.env.example
+!frontend/.env.example
 *.tsbuildinfo
-coveragenode_modules
+coverage

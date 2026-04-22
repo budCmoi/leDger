@@ -6,11 +6,14 @@ import { Outlet } from 'react-router-dom';
 import { SiteFooter } from '../components/common/SiteFooter';
 import { Sidebar } from '../components/navigation/Sidebar';
 import { Topbar } from '../components/navigation/Topbar';
+import { useRealtimeSync } from '../hooks/useRealtimeSync';
 import { useAppStore } from '../store/useAppStore';
 
 export const AppLayout = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const user = useAppStore((state) => state.user);
+
+  useRealtimeSync();
 
   return (
     <div className="premium-shell">
@@ -30,7 +33,7 @@ export const AppLayout = () => {
                   <X size={16} />
                 </button>
               </div>
-              <Sidebar companyName={user?.companyName} onNavigate={() => setMobileOpen(false)} />
+              <Sidebar companyName={user?.companyName || 'Restaurant Ops'} onNavigate={() => setMobileOpen(false)} />
             </DialogPanel>
           </div>
         </Dialog>

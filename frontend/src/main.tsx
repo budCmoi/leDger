@@ -11,10 +11,10 @@ import './index.css';
 const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
-const TransactionsPage = lazy(() => import('./pages/TransactionsPage'));
+const ProductsPage = lazy(() => import('./pages/ProductsPage'));
 const InvoicesPage = lazy(() => import('./pages/InvoicesPage'));
-const ReportsPage = lazy(() => import('./pages/ReportsPage'));
-const ProfilePage = lazy(() => import('./pages/ProfilePage'));
+const OutputsPage = lazy(() => import('./pages/OutputsPage'));
+const JournalPage = lazy(() => import('./pages/JournalPage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -39,12 +39,12 @@ const App = () => {
           <Route element={<ProtectedRoute />}>
             <Route element={<AppLayout />}>
               <Route element={<DashboardPage />} path="/dashboard" />
-              <Route element={<TransactionsPage />} path="/transactions" />
-              <Route element={<InvoicesPage />} path="/invoices" />
-              <Route element={<ReportsPage />} path="/reports" />
-              <Route element={<ProfilePage />} path="/profile" />
+              <Route element={<ProductsPage />} path="/products" />
+              <Route element={<InvoicesPage />} path="/purchase-invoices" />
+              <Route element={<OutputsPage />} path="/outputs" />
+              <Route element={<JournalPage />} path="/journal" />
               <Route element={<AdminRoute />}>
-                <Route element={<AdminPage />} path="/admin-secret" />
+                <Route element={<AdminPage />} path="/admin" />
               </Route>
             </Route>
           </Route>

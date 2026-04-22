@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  user
+  admin
+}
+
+enum ProductCategory {
+  fresh
+  frozen
+  dry
+}
+
+enum StockMovementType {
+  purchase
+  consumption
+  adjustment
+}
+
+enum OutputType {
+  breakfast
+  lunch
+  pizza
+}
+
+model User {
+  id               String            @id @default(cuid())
+  identifier       String            @unique
+  fullName         String
+  role             UserRole          @default(user)
+  passwordHash     String
+  isActive         Boolean           @default(true)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  purchaseInvoices PurchaseInvoice[] @relation("PurchaseInvoiceCreatedBy")
+  outputs          Output[]          @relation("OutputCreatedBy")
+  stockMovements   StockMovement[]   @relation("StockMovementCreatedBy")
+  auditLogs        AuditLog[]        @relation("AuditActor")
+}
+
+model Product {
+  id             String                @id @default(cuid())
+  name           String
+  unitPrice      Float
+  category       ProductCategory
+  isOrganic      Boolean               @default(false)
+  unit           String                @default("kg")
+  currentStock   Float                 @default(0)
+  minimumStock   Float                 @default(0)
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
+  invoiceItems   PurchaseInvoiceItem[]
+  outputItems    OutputItem[]
+  stockMovements StockMovement[]
+  auditLogs      AuditLog[]            @relation("AuditProduct")
+}
+
+model PurchaseInvoice {
+  id          String                @id @default(cuid())
+  reference   String                @unique
+  supplier    String
+  totalAmount Float
+  invoiceDate DateTime
+  notes       String?
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @updatedAt
+  createdById String
+  createdBy   User                  @relation("PurchaseInvoiceCreatedBy", fields: [createdById], references: [id])
+  items       PurchaseInvoiceItem[]
+  stockMovements StockMovement[]
+  auditLogs   AuditLog[]            @relation("AuditPurchaseInvoice")
+}
+
+model PurchaseInvoiceItem {
+  id              String          @id @default(cuid())
+  invoiceId       String
+  productId       String
+  quantity        Float
+  unitPrice       Float
+  lineTotal       Float
+  purchaseInvoice PurchaseInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  product         Product         @relation(fields: [productId], references: [id])
+}
+
+model Output {
+  id               String      @id @default(cuid())
+  type             OutputType
+  typeCode         Int
+  notes            String?
+  estimatedRevenue Float
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  createdById      String
+  createdBy        User        @relation("OutputCreatedBy", fields: [createdById], references: [id])
+  items            OutputItem[]
+  stockMovements   StockMovement[]
+  auditLogs        AuditLog[]  @relation("AuditOutput")
+}
+
+model OutputItem {
+  id        String  @id @default(cuid())
+  outputId  String
+  productId String
+  quantity  Float
+  unitCost  Float
+  lineTotal Float
+  output    Output  @relation(fields: [outputId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+}
+
+model StockMovement {
+  id                String            @id @default(cuid())
+  productId         String
+  type              StockMovementType
+  quantityDelta     Float
+  quantityBefore    Float
+  quantityAfter     Float
+  reason            String
+  createdAt         DateTime          @default(now())
+  createdById       String
+  purchaseInvoiceId String?
+  outputId          String?
+  product           Product           @relation(fields: [productId], references: [id])
+  createdBy         User              @relation("StockMovementCreatedBy", fields: [createdById], references: [id])
+  purchaseInvoice   PurchaseInvoice?  @relation(fields: [purchaseInvoiceId], references: [id])
+  output            Output?           @relation(fields: [outputId], references: [id])
+}
+
+model AuditLog {
+  id                String           @id @default(cuid())
+  actorId           String
+  entityType        String
+  entityId          String
+  action            String
+  description       String
+  payload           Json?
+  createdAt         DateTime         @default(now())
+  productId         String?
+  purchaseInvoiceId String?
+  outputId          String?
+  actor             User             @relation("AuditActor", fields: [actorId], references: [id])
+  product           Product?         @relation("AuditProduct", fields: [productId], references: [id])
+  purchaseInvoice   PurchaseInvoice? @relation("AuditPurchaseInvoice", fields: [purchaseInvoiceId], references: [id])
+  output            Output?          @relation("AuditOutput", fields: [outputId], references: [id])
+}

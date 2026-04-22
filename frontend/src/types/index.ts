@@ -1,15 +1,20 @@
 export type UserRole = 'user' | 'admin';
 export type TransactionType = 'income' | 'expense';
 export type InvoiceStatus = 'draft' | 'unpaid' | 'paid' | 'overdue';
+export type ProductCategory = 'fresh' | 'frozen' | 'dry';
+export type OutputType = 'breakfast' | 'lunch' | 'pizza';
 
 export interface User {
   id: string;
+  identifier?: string;
+  fullName?: string;
   email: string;
   name: string;
   avatar?: string;
   companyName: string;
   role: UserRole;
   currency: string;
+  isActive?: boolean;
 }
 
 export interface Transaction {
@@ -120,4 +125,124 @@ export interface AppBootstrap {
   dashboard: DashboardSummary;
   transactions: Transaction[];
   invoices: Invoice[];
+}
+
+export interface InventoryProduct {
+  id: string;
+  name: string;
+  unitPrice: number;
+  category: ProductCategory;
+  isOrganic: boolean;
+  unit: string;
+  currentStock: number;
+  minimumStock: number;
+  inventoryValue: number;
+  isLowStock: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PurchaseInvoiceLine {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
+}
+
+export interface PurchaseInvoiceRecord {
+  id: string;
+  reference: string;
+  supplier: string;
+  totalAmount: number;
+  invoiceDate: string;
+  notes?: string | null;
+  createdAt: string;
+  createdBy: User;
+  items: PurchaseInvoiceLine[];
+}
+
+export interface OutputLine {
+  id: string;
+  productId: string;
+  productName: string;
+  quantity: number;
+  unitCost: number;
+  lineTotal: number;
+  remainingStock: number;
+}
+
+export interface OutputRecord {
+  id: string;
+  type: OutputType;
+  typeCode: number;
+  notes?: string | null;
+  estimatedRevenue: number;
+  totalCost: number;
+  createdAt: string;
+  createdBy: User;
+  items: OutputLine[];
+}
+
+export interface OutputBreakdown {
+  type: OutputType;
+  typeCode: number;
+  count: number;
+  totalCost: number;
+  estimatedRevenue: number;
+  entries?: OutputRecord[];
+}
+
+export interface DailyJournal {
+  date: string;
+  totals: {
+    outputsCount: number;
+    totalCost: number;
+    estimatedRevenue: number;
+    estimatedGain: number;
+    estimatedLoss: number;
+  };
+  groupedByType: OutputBreakdown[];
+  entries: OutputRecord[];
+}
+
+export interface RestaurantDashboard {
+  metrics: {
+    totalInvoices: number;
+    inventoryValue: number;
+    totalOutputCost: number;
+    estimatedRevenue: number;
+    estimatedGain: number;
+    estimatedLoss: number;
+    dailyRevenueCap: number;
+    dailyRevenueUsed: number;
+  };
+  lowStockProducts: InventoryProduct[];
+  recentInvoices: PurchaseInvoiceRecord[];
+  recentOutputs: OutputRecord[];
+  outputBreakdown: OutputBreakdown[];
+  categoryStockValue: Array<{ label: string; value: number }>;
+}
+
+export interface AuditLogRecord {
+  id: string;
+  entityType: string;
+  entityId: string;
+  action: string;
+  description: string;
+  payload?: unknown;
+  createdAt: string;
+  actor: User;
+}
+
+export interface RestaurantBootstrap {
+  session: SessionResponse;
+  dashboard: RestaurantDashboard;
+  products: InventoryProduct[];
+  purchaseInvoices: PurchaseInvoiceRecord[];
+  outputs: OutputRecord[];
+  journal: DailyJournal;
+  auditLogs: AuditLogRecord[];
+  users: User[];
 }

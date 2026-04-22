@@ -5,8 +5,13 @@ import type {
   AnnualReport,
   AppBootstrap,
   DashboardSummary,
+  DailyJournal,
   Invoice,
+  InventoryProduct,
   MonthlyReport,
+  OutputRecord,
+  PurchaseInvoiceRecord,
+  RestaurantBootstrap,
   SessionResponse,
   Transaction,
   User,
@@ -35,6 +40,56 @@ apiClient.interceptors.request.use((config) => {
 export const isUnauthorizedError = (error: unknown) =>
   error instanceof AxiosError && error.response?.status === 401;
 
+const normalizeUser = (user: Partial<User> & Pick<User, 'id' | 'role' | 'name'>) => ({
+  id: user.id,
+  identifier: user.identifier,
+  fullName: user.fullName ?? user.name,
+  email: user.email ?? '',
+  name: user.name ?? user.fullName ?? '',
+  avatar: user.avatar,
+  companyName: user.companyName ?? 'Restaurant Ops',
+  role: user.role,
+  currency: user.currency ?? 'USD',
+  isActive: user.isActive ?? true,
+});
+
+const normalizeSession = (session: SessionResponse): SessionResponse => ({
+  ...session,
+  user: normalizeUser(session.user),
+});
+
+const normalizeRestaurantBootstrap = (payload: RestaurantBootstrap): RestaurantBootstrap => ({
+  ...payload,
+  session: normalizeSession(payload.session),
+  purchaseInvoices: payload.purchaseInvoices.map((invoice) => ({
+    ...invoice,
+    createdBy: normalizeUser(invoice.createdBy),
+  })),
+  outputs: payload.outputs.map((output) => ({
+    ...output,
+    createdBy: normalizeUser(output.createdBy),
+  })),
+  journal: {
+    ...payload.journal,
+    entries: payload.journal.entries.map((entry) => ({
+      ...entry,
+      createdBy: normalizeUser(entry.createdBy),
+    })),
+    groupedByType: payload.journal.groupedByType.map((group) => ({
+      ...group,
+      entries: group.entries?.map((entry) => ({
+        ...entry,
+        createdBy: normalizeUser(entry.createdBy),
+      })),
+    })),
+  },
+  auditLogs: payload.auditLogs.map((log) => ({
+    ...log,
+    actor: normalizeUser(log.actor),
+  })),
+  users: payload.users.map((user) => normalizeUser(user)),
+});
+
 export const authApi = {
   createFirebaseSession: async (payload: {
     idToken: string;
@@ -48,7 +103,7 @@ export const authApi = {
   },
   getSession: async () => {
     const { data } = await apiClient.get<SessionResponse>('/auth/session');
-    return data;
+    return normalizeSession(data);
   },
   logout: async () => {
     await apiClient.post('/auth/logout');
@@ -157,19 +212,19 @@ export const reportApi = {
 };
 
 export const adminApi = {
-  getOverview: async () => {
-    const { data } = await apiClient.get<AdminOverview>('/admin-secret/overview');
-    return data;
-  },
   listUsers: async () => {
-    const { data } = await apiClient.get<{ users: User[] }>('/admin-secret/users');
-    return data.users;
+    const { data } = await apiClient.get<{ users: User[] }>('/admin/users');
+    return data.users.map((user) => normalizeUser(user));
   },
-  listTransactions: async () => {
-    const { data } = await apiClient.get<{ transactions: Transaction[] }>('/admin-secret/transactions');
-    return data.transactions;
+  createUser: async (payload: { identifier: string; fullName: string; password: string; role: User['role'] }) => {
+    const { data } = await apiClient.post<{ user: User }>('/admin/users', payload);
+    return normalizeUser(data.user);
   },
-  deleteUser: async (userId: string) => {
-    await apiClient.delete(`/admin-secret/users/${userId}`);
+  listAuditLogs: async () => {
+    const { data } = await apiClient.get<{ auditLogs: AuditLogRecord[] }>('/admin/audit-logs');
+    return data.auditLogs.map((log) => ({
+      ...log,
+      actor: normalizeUser(log.actor),
+    }));
   },
 };

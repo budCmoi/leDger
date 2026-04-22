@@ -1,78 +1,67 @@
-import { useEffect } from 'react';
+import { startTransition, useState } from 'react';
 
 import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageTransition } from '../components/common/PageTransition';
 import { SectionHeading } from '../components/common/SectionHeading';
-import { StatCard } from '../components/common/StatCard';
-import { formatCurrency } from '../lib/utils';
-import { adminApi } from '../services/api';
+import { Badge } from '../components/common/Badge';
+import { formatDate } from '../lib/utils';
+import { adminApi, bootstrapApi } from '../services/api';
 import { useAppStore } from '../store/useAppStore';
 
 export default function AdminPage() {
-  const overview = useAppStore((state) => state.adminOverview);
   const users = useAppStore((state) => state.adminUsers);
-  const transactions = useAppStore((state) => state.adminTransactions);
-  const user = useAppStore((state) => state.user);
-  const setAdminData = useAppStore((state) => state.setAdminData);
+  const auditLogs = useAppStore((state) => state.auditLogs);
+  const setRestaurantBootstrap = useAppStore((state) => state.setRestaurantBootstrap);
+  const [busy, setBusy] = useState(false);
+  const [identifier, setIdentifier] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState<'user' | 'admin'>('user');
 
-  useEffect(() => {
-    const loadAdminData = async () => {
-      const [overviewResponse, usersResponse, transactionsResponse] = await Promise.all([
-        adminApi.getOverview(),
-        adminApi.listUsers(),
-        adminApi.listTransactions(),
-      ]);
-
-      setAdminData({
-        overview: overviewResponse,
-        users: usersResponse,
-        transactions: transactionsResponse,
+  const refreshWorkspace = async () => {
+    startTransition(() => {
+      void bootstrapApi.loadRestaurantWorkspace().then((payload) => {
+        setRestaurantBootstrap(payload);
       });
-    };
+    });
+  };
 
-    void loadAdminData();
-  }, [setAdminData]);
+  const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setBusy(true);
 
-  const handleDeleteUser = async (userId: string) => {
-    if (!window.confirm('Delete this user and all accounting data?')) {
-      return;
+    try {
+      await adminApi.createUser({
+        identifier,
+        fullName,
+        password,
+        role,
+      });
+      await refreshWorkspace();
+      setIdentifier('');
+      setFullName('');
+      setPassword('');
+      setRole('user');
+    } finally {
+      setBusy(false);
     }
-
-    await adminApi.deleteUser(userId);
-    const [overviewResponse, usersResponse, transactionsResponse] = await Promise.all([
-      adminApi.getOverview(),
-      adminApi.listUsers(),
-      adminApi.listTransactions(),
-    ]);
-    setAdminData({ overview: overviewResponse, users: usersResponse, transactions: transactionsResponse });
   };
 
   return (
     <PageTransition>
       <div className="space-y-8">
         <SectionHeading
-          description="Private operational layer for platform-wide monitoring, user governance and finance supervision."
-          eyebrow="Restricted route"
-          title="Admin control"
+          description="Gestion des comptes equipe et lecture de la trace d actions sur les produits, sorties et factures d entree."
+          eyebrow="Admin"
+          title="Utilisateurs et traceabilite"
         />
-
-        {overview ? (
-          <div className="grid gap-5 md:grid-cols-3 xl:grid-cols-6">
-            <StatCard currency={user?.currency} label="Users" tone="neutral" value={overview.stats.users} />
-            <StatCard currency={user?.currency} label="Transactions" tone="neutral" value={overview.stats.transactions} />
-            <StatCard currency={user?.currency} label="Invoices" tone="neutral" value={overview.stats.invoices} />
-            <StatCard currency={user?.currency} label="Revenue" tone="positive" value={overview.stats.revenue} />
-            <StatCard currency={user?.currency} label="Expenses" tone="negative" value={overview.stats.expenses} />
-            <StatCard currency={user?.currency} label="Profit" tone="neutral" value={overview.stats.profit} />
-          </div>
-        ) : null}
 
         <div className="grid gap-6 xl:grid-cols-2">
           <Card>
             <div className="space-y-2">
-              <p className="premium-label">Users</p>
-              <h2 className="text-xl uppercase tracking-[0.16em] text-white">Workspace accounts</h2>
+              <p className="premium-label">Comptes</p>
+              <h2 className="text-xl uppercase tracking-[0.16em] text-white">Equipe active</h2>
             </div>
             <div className="mt-6 space-y-3">
               {users.map((workspaceUser) => (
@@ -80,13 +69,10 @@ export default function AdminPage() {
                   <div className="flex items-center justify-between gap-4">
                     <div>
                       <p className="text-sm uppercase tracking-[0.16em] text-white">{workspaceUser.name}</p>
-                      <p className="mt-1 text-xs text-white/45">{workspaceUser.email}</p>
+                      <p className="mt-1 text-xs text-white/45">{workspaceUser.identifier ?? workspaceUser.email}</p>
                     </div>
-                    <p className="text-xs uppercase tracking-[0.18em] text-white/55">{workspaceUser.role}</p>
+                    <Badge>{workspaceUser.role}</Badge>
                   </div>
-                  <Button onClick={() => void handleDeleteUser(workspaceUser.id)} variant="ghost">
-                    Delete user
-                  </Button>
                 </div>
               ))}
             </div>
@@ -94,22 +80,43 @@ export default function AdminPage() {
 
           <Card>
             <div className="space-y-2">
-              <p className="premium-label">Platform transactions</p>
-              <h2 className="text-xl uppercase tracking-[0.16em] text-white">Cross-account activity</h2>
+              <p className="premium-label">Nouveau compte</p>
+              <h2 className="text-xl uppercase tracking-[0.16em] text-white">Ajouter un utilisateur</h2>
             </div>
-            <div className="mt-6 space-y-3">
-              {transactions.slice(0, 12).map((transaction) => (
-                <div className="flex items-center justify-between gap-4 rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-4" key={transaction.id}>
-                  <div>
-                    <p className="text-sm uppercase tracking-[0.16em] text-white">{transaction.title}</p>
-                    <p className="mt-1 text-xs text-white/45">{transaction.category}</p>
-                  </div>
-                  <p className="text-xs uppercase tracking-[0.16em] text-white">{formatCurrency(transaction.amount, transaction.currency)}</p>
-                </div>
-              ))}
-            </div>
+            <form className="mt-6 space-y-4" onSubmit={(event) => void handleCreateUser(event)}>
+              <input className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none" onChange={(event) => setFullName(event.target.value)} placeholder="Nom complet" value={fullName} />
+              <input className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none" onChange={(event) => setIdentifier(event.target.value)} placeholder="Identifiant" value={identifier} />
+              <input className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none" onChange={(event) => setPassword(event.target.value)} placeholder="Mot de passe" type="password" value={password} />
+              <select className="w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none" onChange={(event) => setRole(event.target.value as 'user' | 'admin')} value={role}>
+                <option value="user">Utilisateur</option>
+                <option value="admin">Admin</option>
+              </select>
+              <Button disabled={busy} type="submit">
+                Creer le compte
+              </Button>
+            </form>
           </Card>
         </div>
+
+        <Card>
+          <div className="space-y-2">
+            <p className="premium-label">Audit trail</p>
+            <h2 className="text-xl uppercase tracking-[0.16em] text-white">Dernieres actions</h2>
+          </div>
+          <div className="mt-6 space-y-3">
+            {auditLogs.map((log) => (
+              <div className="rounded-[1.5rem] border border-white/8 bg-white/[0.03] p-4" key={log.id}>
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.16em] text-white">{log.description}</p>
+                    <p className="mt-1 text-xs text-white/45">{log.actor.name} • {formatDate(log.createdAt, 'dd MMM yyyy HH:mm')}</p>
+                  </div>
+                  <Badge>{log.entityType}</Badge>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
     </PageTransition>
   );

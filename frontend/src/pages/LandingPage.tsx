@@ -9,7 +9,7 @@ import { SiteFooter } from '../components/common/SiteFooter';
 import { useAppStore } from '../store/useAppStore';
 
 const showcaseMetrics = [
-  { label: 'Revenue visibility', value: '24/7' },
+  { label: 'Stock visibility', value: '24/7' },
   { label: 'Protected admin access', value: 'RBAC' },
   { label: 'Firebase authentication', value: 'Email/Password' },
 ];
@@ -35,7 +35,7 @@ export default function LandingPage() {
         <header className="flex items-center justify-between py-6">
           <div>
             <p className="premium-label">Ledger Premium</p>
-            <p className="mt-2 text-lg uppercase tracking-[0.28em] text-white">Accounting SaaS</p>
+            <p className="mt-2 text-lg uppercase tracking-[0.28em] text-white">Restaurant Operations</p>
           </div>
           <div className="flex items-center gap-3">
             <Badge>Black / White / Yellow</Badge>
@@ -48,9 +48,9 @@ export default function LandingPage() {
         <main className="flex flex-1 flex-col justify-center py-12">
           <section className="grid gap-12 lg:grid-cols-[1.3fr_0.7fr] lg:items-end">
             <motion.div animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 24 }} transition={{ duration: 0.7 }}>
-              <Badge>Premium finance operating system</Badge>
+              <Badge>Plateforme de gestion restauration</Badge>
               <h1 className="mt-6 max-w-4xl text-4xl uppercase leading-[1.1] tracking-[0.16em] text-white md:text-6xl">
-                Minimal accounting for operators who expect luxury-grade execution.
+                Stock, achats, sorties et journal quotidien pour les operations cuisine.
               </h1>
               <p className="mt-6 max-w-2xl text-sm leading-8 text-white/60 md:text-base">
                 Ledger Premium fuses modern financial tooling, Firebase-authenticated access and a showroom-caliber interface inspired by fashion houses and award-winning digital brands.
@@ -64,7 +64,7 @@ export default function LandingPage() {
                   <ArrowRight size={16} />
                 </Button>
                 <Button onClick={() => window.location.assign('#about')} variant="secondary">
-                  Explore the stack
+                  Voir le perimetre
                 </Button>
               </div>
             </motion.div>
@@ -78,8 +78,8 @@ export default function LandingPage() {
               <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-accent/20 blur-3xl" />
               <div className="space-y-6">
                 <div>
-                  <p className="premium-label">Product posture</p>
-                  <h2 className="mt-3 text-2xl uppercase tracking-[0.18em] text-white">Built for clarity</h2>
+                  <p className="premium-label">Poste de pilotage</p>
+                  <h2 className="mt-3 text-2xl uppercase tracking-[0.18em] text-white">Construit pour le terrain</h2>
                 </div>
                 <div className="space-y-3 text-sm leading-7 text-white/60">
                   {features.map((feature) => (
@@ -107,23 +107,23 @@ export default function LandingPage() {
           <section className="mt-20 grid gap-6 lg:grid-cols-3" id="about">
             <Card className="space-y-4">
               <Sparkles className="text-accent" size={18} />
-              <h3 className="text-xl uppercase tracking-[0.16em] text-white">Awwwards-grade polish</h3>
+              <h3 className="text-xl uppercase tracking-[0.16em] text-white">Vue operationnelle</h3>
               <p className="text-sm leading-7 text-white/58">
-                Fluid motion, restrained typography, spacious grids and elegant contrast tuned for desktop, tablet and mobile.
+                Ecrans orientes action avec formulaires directs, listes utiles et retours visuels immediats sur desktop comme sur tablette.
               </p>
             </Card>
             <Card className="space-y-4">
               <ShieldCheck className="text-accent4" size={18} />
               <h3 className="text-xl uppercase tracking-[0.16em] text-white">Production security</h3>
               <p className="text-sm leading-7 text-white/58">
-                JWT session cookies, CSRF protection, input validation, rate limiting, role gates and sanitized API payloads.
+                Cookies JWT, protection CSRF, validation stricte, roles utilisateur/admin et historique d actions centralise.
               </p>
             </Card>
             <Card className="space-y-4">
               <LockKeyhole className="text-accent3" size={18} />
-              <h3 className="text-xl uppercase tracking-[0.16em] text-white">Scalable architecture</h3>
+              <h3 className="text-xl uppercase tracking-[0.16em] text-white">Architecture evolutive</h3>
               <p className="text-sm leading-7 text-white/58">
-                A modular React + Vite frontend paired with a layered Express + MongoDB backend designed for growth.
+                Frontend React/Vite, backend Express, Prisma et PostgreSQL avec un socle propre pour pousser vers Railway, Vercel ou VPS.
               </p>
             </Card>
           </section>

@@ -15,6 +15,7 @@ const authRouter = Router();
 authRouter.post('/firebase/session', ensureFirebaseAuthConfigured, validate(createFirebaseSessionSchema), createFirebaseSession);
 
 authRouter.get('/session', requireAuth, getSession);
+authRouter.get('/bootstrap', requireAuth, getWorkspaceBootstrap);
 authRouter.post('/logout', requireAuth, requireCsrf, logout);
 
 export { authRouter };

@@ -1,20 +1,14 @@
 import { Router } from 'express';
 
-import {
-  deleteUser,
-  getAdminOverview,
-  listPlatformTransactions,
-  listUsers,
-} from '../controllers/admin.controller';
+import { createAdminUser, getAuditTrail, listUsers } from '../controllers/admin.controller';
 import { requireAuth, requireCsrf, requireRole } from '../middlewares/auth';
 
 const adminRouter = Router();
 
 adminRouter.use(requireAuth, requireRole('admin'));
 
-adminRouter.get('/overview', getAdminOverview);
 adminRouter.get('/users', listUsers);
-adminRouter.get('/transactions', listPlatformTransactions);
-adminRouter.delete('/users/:userId', requireCsrf, deleteUser);
+adminRouter.post('/users', requireCsrf, createAdminUser);
+adminRouter.get('/audit-logs', getAuditTrail);
 
 export { adminRouter };

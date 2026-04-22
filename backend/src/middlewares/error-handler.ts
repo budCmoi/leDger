@@ -1,5 +1,6 @@
 import type { ErrorRequestHandler, RequestHandler } from 'express';
 
+import { Prisma } from '@prisma/client';
 import mongoose from 'mongoose';
 import { ZodError } from 'zod';
 

@@ -1,5 +1,7 @@
 import type { RequestHandler } from 'express';
 
+import { z } from 'zod';
+
 import { ACCESS_TOKEN_COOKIE, CSRF_TOKEN_COOKIE } from '../constants/app';
 import { adminEmails, isFirebaseAuthConfigured } from '../config/env';
 import { User } from '../models/User';
@@ -8,7 +10,7 @@ import { createCsrfToken, signAccessToken } from '../services/token.service';
 import { asyncHandler } from '../utils/async-handler';
 import { AppError } from '../utils/app-error';
 import { buildAccessCookieOptions, buildCsrfCookieOptions } from '../utils/cookies';
-import { mapUser } from '../utils/serializers';
+import { loadRestaurantBootstrap } from '../services/restaurant.service';
 
 type FirebaseSessionPayload = {
   idToken: string;
@@ -109,10 +111,27 @@ export const getSession: RequestHandler = (req, res, next) => {
   }
 
   return res.json({
-    user: mapUser(req.user),
+    user: mapAuthenticatedUser(req.user),
     csrfToken: req.cookies[CSRF_TOKEN_COOKIE] ?? null,
   });
 };
+
+export const getWorkspaceBootstrap: RequestHandler = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    throw new AppError(401, 'Authentication required');
+  }
+
+  const payload = await loadRestaurantBootstrap(req.user);
+
+  res.json({
+    ...payload,
+    session: {
+      ...payload.session,
+      user: mapAuthenticatedUser(req.user),
+      csrfToken: req.cookies[CSRF_TOKEN_COOKIE] ?? null,
+    },
+  });
+});
 
 export const logout: RequestHandler = (_req, res) => {
   res.clearCookie(ACCESS_TOKEN_COOKIE, buildAccessCookieOptions());
