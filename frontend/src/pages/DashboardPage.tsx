@@ -5,6 +5,7 @@ import { Card } from '../components/common/Card';
 import { PageTransition } from '../components/common/PageTransition';
 import { SectionHeading } from '../components/common/SectionHeading';
 import { StatCard } from '../components/common/StatCard';
+import { TrendBarChart } from '../components/charts/TrendBarChart';
 import { formatCurrency, formatDate } from '../lib/utils';
 import { useAppStore } from '../store/useAppStore';
 
@@ -23,6 +24,11 @@ export default function DashboardPage() {
   }
 
   const currency = user.currency || 'USD';
+  const outputTrend = dashboard.outputBreakdown.map((item) => ({
+    month: String(item.typeCode),
+    income: item.estimatedRevenue,
+    expenses: item.totalCost,
+  }));
 
   return (
     <PageTransition>
@@ -50,7 +56,7 @@ export default function DashboardPage() {
               <Badge>Aujourd hui</Badge>
             </div>
             <div className="h-80 min-w-0">
-              <RevenueLineChart points={dashboard.monthlyIncome} />
+              <TrendBarChart points={outputTrend} />
             </div>
           </Card>
 
@@ -62,8 +68,18 @@ export default function DashboardPage() {
               </div>
               <Badge>{dashboard.lowStockProducts.length}</Badge>
             </div>
-            <div className="h-80 min-w-0">
-              <ExpenseDoughnutChart categories={dashboard.expenseCategories} />
+            <div className="space-y-3">
+              {dashboard.lowStockProducts.slice(0, 8).map((product) => (
+                <div className="flex items-center justify-between rounded-[1.5rem] border border-white/8 bg-white/[0.03] px-4 py-4" key={product.id}>
+                  <span className="text-sm uppercase tracking-[0.16em] text-white/72">{product.name}</span>
+                  <span className="text-xs uppercase tracking-[0.16em] text-white/65">
+                    {product.currentStock} / {product.minimumStock} {product.unit}
+                  </span>
+                </div>
+              ))}
+              {dashboard.lowStockProducts.length === 0 ? (
+                <p className="text-sm text-white/55">Aucun produit en-dessous du seuil minimum.</p>
+              ) : null}
             </div>
           </Card>
         </div>

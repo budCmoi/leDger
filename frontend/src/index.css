@@ -21,6 +21,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 10.4px;
 }
 
 body {
@@ -29,6 +30,7 @@ body {
   min-height: 100vh;
   background-color: #050505;
   color: #ffffff;
+  font-size: 1rem;
 }
 
 body::before {
@@ -87,6 +89,6 @@ textarea {
   }
 
   .premium-label {
-    @apply text-[11px] uppercase tracking-[0.35em] text-white/50;
+    @apply text-[8px] uppercase tracking-[0.32em] text-white/50;
   }
 }

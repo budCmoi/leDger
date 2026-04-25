@@ -1,4 +1,4 @@
-import { ChefHat, LayoutDashboard, Package, ReceiptText, ScrollText, ShieldCheck } from 'lucide-react';
+import { ChefHat, LayoutDashboard, Package, Plus, ReceiptText, ScrollText, ShieldCheck } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 import { Badge } from '../common/Badge';
@@ -6,7 +6,8 @@ import { cn } from '../../lib/utils';
 
 const navigationItems = [
   { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/products', label: 'Produits', icon: Package },
+  { to: '/products', label: 'Inventaire', icon: Package },
+  { to: '/products/new', label: 'Nouveau produit', icon: Plus },
   { to: '/purchase-invoices', label: 'Entrees', icon: ReceiptText },
   { to: '/outputs', label: 'Sorties', icon: ChefHat },
   { to: '/journal', label: 'Journal', icon: ScrollText },

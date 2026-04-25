@@ -16,8 +16,8 @@ export const SectionHeading = ({ action, className, description, eyebrow, title 
       <div className="space-y-3">
         {eyebrow ? <p className="premium-label">{eyebrow}</p> : null}
         <div className="space-y-2">
-          <h1 className="text-3xl uppercase tracking-[0.14em] text-white md:text-4xl">{title}</h1>
-          {description ? <p className="max-w-2xl text-sm leading-7 text-white/58">{description}</p> : null}
+          <h1 className="text-sm uppercase tracking-[0.12em] text-white md:text-base">{title}</h1>
+          {description ? <p className="max-w-2xl text-xs leading-5 text-white/58">{description}</p> : null}
         </div>
       </div>
       {action ? <div className="flex items-center gap-3">{action}</div> : null}

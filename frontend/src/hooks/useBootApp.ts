@@ -7,15 +7,19 @@ import { useAppStore } from '../store/useAppStore';
 export const useBootApp = () => {
   const hasBootedRef = useRef(false);
   const setRestaurantBootstrap = useAppStore((state) => state.setRestaurantBootstrap);
+  const setAuthSession = useAppStore((state) => state.setAuthSession);
+  const setDashboard = useAppStore((state) => state.setDashboard);
+  const setTransactions = useAppStore((state) => state.setTransactions);
+  const setInvoices = useAppStore((state) => state.setInvoices);
   const setUnauthenticated = useAppStore((state) => state.setUnauthenticated);
 
-  const applyBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadRestaurantWorkspace>>) => {
+  const applyRestaurantBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadRestaurantWorkspace>>) => {
     startTransition(() => {
       setRestaurantBootstrap(payload);
     });
   };
 
-  const applyBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadAuthenticatedApp>>) => {
+  const applyAuthenticatedBootstrap = (payload: Awaited<ReturnType<typeof bootstrapApi.loadAuthenticatedApp>>) => {
     startTransition(() => {
       setAuthSession(payload.session);
       setDashboard(payload.dashboard);
@@ -33,7 +37,7 @@ export const useBootApp = () => {
 
     const boot = async () => {
       try {
-        applyBootstrap(await bootstrapApi.loadAuthenticatedApp());
+        applyRestaurantBootstrap(await bootstrapApi.loadRestaurantWorkspace());
       } catch (error) {
         if (!isUnauthorizedError(error)) {
           console.error(error);
@@ -53,7 +57,15 @@ export const useBootApp = () => {
             return;
           }
 
-          applyBootstrap(restoredSession);
+          applyAuthenticatedBootstrap(restoredSession);
+
+          try {
+            applyRestaurantBootstrap(await bootstrapApi.loadRestaurantWorkspace());
+          } catch (workspaceError) {
+            if (!isUnauthorizedError(workspaceError)) {
+              console.error(workspaceError);
+            }
+          }
         } catch (restoreError) {
           if (!isUnauthorizedError(restoreError)) {
             console.error(restoreError);
@@ -67,5 +79,5 @@ export const useBootApp = () => {
     };
 
     void boot();
-  }, [setRestaurantBootstrap, setUnauthenticated]);
+  }, [setAuthSession, setDashboard, setInvoices, setRestaurantBootstrap, setTransactions, setUnauthenticated]);
 };

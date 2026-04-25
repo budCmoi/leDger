@@ -52,6 +52,7 @@ model Product {
   category       ProductCategory
   isOrganic      Boolean               @default(false)
   unit           String                @default("kg")
+  description    String?
   currentStock   Float                 @default(0)
   minimumStock   Float                 @default(0)
   createdAt      DateTime              @default(now())

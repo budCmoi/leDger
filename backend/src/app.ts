@@ -35,10 +35,8 @@ app.use(
   cors({
     origin: corsOrigin,
     credentials: true,
-  };
-};
-
-app.use(cors((req, callback) => callback(null, buildCorsOptions(req))));
+  }),
+);
 
 app.use(
   helmet({
@@ -50,7 +48,6 @@ app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,
     limit: 250,
-    keyGenerator: (req) => resolveRateLimitKey(req),
     standardHeaders: 'draft-7',
     legacyHeaders: false,
   }),

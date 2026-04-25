@@ -3,6 +3,7 @@ import axios, { AxiosError } from 'axios';
 import type {
   AdminOverview,
   AnnualReport,
+  AuditLogRecord,
   AppBootstrap,
   DashboardSummary,
   DailyJournal,
@@ -10,6 +11,9 @@ import type {
   InventoryProduct,
   MonthlyReport,
   OutputRecord,
+  ProductListParams,
+  ProductListResponse,
+  ProductMutationPayload,
   PurchaseInvoiceRecord,
   RestaurantBootstrap,
   SessionResponse,
@@ -19,6 +23,7 @@ import type {
 import { downloadBlob, readCookie } from '../lib/utils';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL ?? (import.meta.env.PROD ? '/api' : 'http://localhost:4000/api');
+export const SOCKET_BASE_URL = import.meta.env.VITE_SOCKET_URL ?? (import.meta.env.PROD ? undefined : 'http://localhost:4000');
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -58,9 +63,34 @@ const normalizeSession = (session: SessionResponse): SessionResponse => ({
   user: normalizeUser(session.user),
 });
 
+const normalizeProduct = (product: Partial<InventoryProduct> & Pick<InventoryProduct, 'id' | 'name' | 'category' | 'unit' | 'minimumStock' | 'createdAt' | 'updatedAt'>): InventoryProduct => {
+  const price = product.price ?? product.unitPrice ?? 0;
+  const quantity = product.quantity ?? product.currentStock ?? 0;
+  const isBio = product.isBio ?? product.isOrganic ?? false;
+
+  return {
+    ...product,
+    price,
+    unitPrice: price,
+    isBio,
+    isOrganic: isBio,
+    type: product.type ?? (isBio ? 'bio' : product.category),
+    description: product.description ?? null,
+    quantity,
+    currentStock: quantity,
+    inventoryValue: product.inventoryValue ?? quantity * price,
+    isLowStock: product.isLowStock ?? (product.minimumStock > 0 && quantity <= product.minimumStock),
+  } as InventoryProduct;
+};
+
 const normalizeRestaurantBootstrap = (payload: RestaurantBootstrap): RestaurantBootstrap => ({
   ...payload,
   session: normalizeSession(payload.session),
+  dashboard: {
+    ...payload.dashboard,
+    lowStockProducts: payload.dashboard.lowStockProducts.map((product) => normalizeProduct(product)),
+  },
+  products: payload.products.map((product) => normalizeProduct(product)),
   purchaseInvoices: payload.purchaseInvoices.map((invoice) => ({
     ...invoice,
     createdBy: normalizeUser(invoice.createdBy),
@@ -111,6 +141,10 @@ export const authApi = {
 };
 
 export const bootstrapApi = {
+  loadRestaurantWorkspace: async () => {
+    const { data } = await apiClient.get<RestaurantBootstrap>('/bootstrap');
+    return normalizeRestaurantBootstrap(data);
+  },
   loadAuthenticatedApp: async () => {
     const session = await authApi.getSession();
     const [dashboard, transactions, invoices] = await Promise.all([
@@ -226,5 +260,72 @@ export const adminApi = {
       ...log,
       actor: normalizeUser(log.actor),
     }));
+  },
+};
+
+export const productApi = {
+  list: async (params: ProductListParams = {}) => {
+    const { data } = await apiClient.get<ProductListResponse>('/products', { params });
+    return {
+      ...data,
+      items: data.items.map((product) => normalizeProduct(product)),
+    } satisfies ProductListResponse;
+  },
+  create: async (payload: ProductMutationPayload) => {
+    const { data } = await apiClient.post<{ product: InventoryProduct }>('/products', payload);
+    return normalizeProduct(data.product);
+  },
+  update: async (productId: string, payload: Partial<ProductMutationPayload>) => {
+    const { data } = await apiClient.patch<{ product: InventoryProduct }>(`/products/${productId}`, payload);
+    return normalizeProduct(data.product);
+  },
+  remove: async (productId: string) => {
+    await apiClient.delete(`/products/${productId}`);
+  },
+  adjustStock: async (productId: string, payload: { newStock: number; reason: string }) => {
+    const { data } = await apiClient.post<{ product: InventoryProduct }>(`/products/${productId}/stock-adjustments`, payload);
+    return normalizeProduct(data.product);
+  },
+};
+
+export const purchaseInvoiceApi = {
+  list: async () => {
+    const { data } = await apiClient.get<{ purchaseInvoices: PurchaseInvoiceRecord[] }>('/purchase-invoices');
+    return data.purchaseInvoices;
+  },
+  create: async (payload: {
+    reference: string;
+    supplier: string;
+    invoiceDate: string;
+    notes?: string;
+    items: Array<{ productId: string; quantity: number; unitPrice: number }>;
+  }) => {
+    const { data } = await apiClient.post<{ purchaseInvoice: PurchaseInvoiceRecord }>('/purchase-invoices', payload);
+    return data.purchaseInvoice;
+  },
+};
+
+export const outputApi = {
+  list: async () => {
+    const { data } = await apiClient.get<{ outputs: OutputRecord[] }>('/outputs');
+    return data.outputs;
+  },
+  create: async (payload: {
+    type: OutputRecord['type'];
+    notes?: string;
+    estimatedRevenue?: number;
+    items: Array<{ productId: string; quantity: number }>;
+  }) => {
+    const { data } = await apiClient.post<{ output: OutputRecord }>('/outputs', payload);
+    return data.output;
+  },
+};
+
+export const journalApi = {
+  getDaily: async (date?: string) => {
+    const { data } = await apiClient.get<{ journal: DailyJournal }>('/journal/daily', {
+      params: date ? { date } : undefined,
+    });
+    return data.journal;
   },
 };

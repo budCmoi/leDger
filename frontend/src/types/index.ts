@@ -2,6 +2,8 @@ export type UserRole = 'user' | 'admin';
 export type TransactionType = 'income' | 'expense';
 export type InvoiceStatus = 'draft' | 'unpaid' | 'paid' | 'overdue';
 export type ProductCategory = 'fresh' | 'frozen' | 'dry';
+export type ProductInventoryType = ProductCategory | 'bio';
+export type ProductUnit = 'kg' | 'unit';
 export type OutputType = 'breakfast' | 'lunch' | 'pizza';
 
 export interface User {
@@ -130,16 +132,49 @@ export interface AppBootstrap {
 export interface InventoryProduct {
   id: string;
   name: string;
+  price: number;
   unitPrice: number;
   category: ProductCategory;
+  isBio: boolean;
   isOrganic: boolean;
-  unit: string;
+  type: ProductInventoryType;
+  unit: ProductUnit | string;
+  description?: string | null;
+  quantity: number;
   currentStock: number;
   minimumStock: number;
   inventoryValue: number;
   isLowStock: boolean;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface ProductListParams {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  category?: ProductCategory;
+  type?: ProductInventoryType;
+  lowStock?: boolean;
+}
+
+export interface ProductListResponse {
+  items: InventoryProduct[];
+  total: number;
+  page: number;
+  pageSize: number;
+  hasMore: boolean;
+}
+
+export interface ProductMutationPayload {
+  name: string;
+  price: number;
+  category: ProductCategory;
+  isBio: boolean;
+  unit: ProductUnit | string;
+  quantity: number;
+  minimumStock: number;
+  description?: string | null;
 }
 
 export interface PurchaseInvoiceLine {

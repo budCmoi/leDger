@@ -20,6 +20,7 @@ const productSelect = {
   category: true,
   isOrganic: true,
   unit: true,
+  description: true,
   currentStock: true,
   minimumStock: true,
   createdAt: true,
@@ -80,15 +81,27 @@ export type SessionUser = {
 
 export type ProductInput = {
   name: string;
-  unitPrice: number;
+  price: number;
   category: ProductCategory;
-  isOrganic: boolean;
+  isBio: boolean;
   unit: string;
-  currentStock: number;
+  quantity: number;
   minimumStock: number;
+  description?: string | null;
 };
 
-export type ProductUpdateInput = Partial<Omit<ProductInput, 'currentStock'>>;
+export type ProductUpdateInput = Partial<ProductInput>;
+
+export type ProductInventoryType = ProductCategory | 'bio';
+
+export type ProductListInput = {
+  page: number;
+  pageSize: number;
+  search?: string;
+  category?: ProductCategory;
+  type?: ProductInventoryType;
+  lowStock?: boolean;
+};
 
 export type StockAdjustmentInput = {
   newStock: number;
@@ -135,20 +148,29 @@ const serializeSessionUser = (user: SessionUser) => ({
   isActive: user.isActive,
 });
 
-const serializeProduct = (product: Prisma.ProductGetPayload<{ select: typeof productSelect }>) => ({
-  id: product.id,
-  name: product.name,
-  unitPrice: product.unitPrice,
-  category: product.category,
-  isOrganic: product.isOrganic,
-  unit: product.unit,
-  currentStock: product.currentStock,
-  minimumStock: product.minimumStock,
-  inventoryValue: roundCurrency(product.currentStock * product.unitPrice),
-  isLowStock: product.minimumStock > 0 && product.currentStock <= product.minimumStock,
-  createdAt: product.createdAt.toISOString(),
-  updatedAt: product.updatedAt.toISOString(),
-});
+const serializeProduct = (product: Prisma.ProductGetPayload<{ select: typeof productSelect }>) => {
+  const productType = product.isOrganic ? 'bio' : product.category;
+
+  return {
+    id: product.id,
+    name: product.name,
+    price: product.unitPrice,
+    unitPrice: product.unitPrice,
+    category: product.category,
+    isBio: product.isOrganic,
+    isOrganic: product.isOrganic,
+    type: productType,
+    unit: product.unit,
+    description: product.description,
+    quantity: product.currentStock,
+    currentStock: product.currentStock,
+    minimumStock: product.minimumStock,
+    inventoryValue: roundCurrency(product.currentStock * product.unitPrice),
+    isLowStock: product.minimumStock > 0 && product.currentStock <= product.minimumStock,
+    createdAt: product.createdAt.toISOString(),
+    updatedAt: product.updatedAt.toISOString(),
+  };
+};
 
 const serializePurchaseInvoice = (invoice: Prisma.PurchaseInvoiceGetPayload<{ include: typeof purchaseInvoiceInclude }>) => ({
   id: invoice.id,
@@ -230,29 +252,89 @@ export const listProducts = async () => {
   return products.map((product) => serializeProduct(product));
 };
 
+export const listProductsPage = async (input: ProductListInput) => {
+  const where: Prisma.ProductWhereInput = {
+    ...(input.search
+      ? {
+          OR: [
+            {
+              name: {
+                contains: input.search,
+                mode: 'insensitive',
+              },
+            },
+            {
+              description: {
+                contains: input.search,
+                mode: 'insensitive',
+              },
+            },
+          ],
+        }
+      : {}),
+    ...(input.category ? { category: input.category } : {}),
+    ...(input.type === 'bio'
+      ? { isOrganic: true }
+      : input.type
+        ? { category: input.type }
+        : {}),
+    ...(input.lowStock
+      ? {
+          minimumStock: {
+            gt: 0,
+          },
+          currentStock: {
+            lte: prisma.product.fields.minimumStock,
+          },
+        }
+      : {}),
+  };
+
+  const skip = (input.page - 1) * input.pageSize;
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      select: productSelect,
+      orderBy: [{ category: 'asc' }, { name: 'asc' }],
+      skip,
+      take: input.pageSize,
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return {
+    items: products.map((product) => serializeProduct(product)),
+    total,
+    page: input.page,
+    pageSize: input.pageSize,
+    hasMore: skip + products.length < total,
+  };
+};
+
 export const createProduct = async (actor: Express.User, input: ProductInput) => {
   const product = await prisma.$transaction(async (tx) => {
     const createdProduct = await tx.product.create({
       data: {
         name: input.name,
-        unitPrice: roundCurrency(input.unitPrice),
+        unitPrice: roundCurrency(input.price),
         category: input.category,
-        isOrganic: input.isOrganic,
+        isOrganic: input.isBio,
         unit: input.unit,
-        currentStock: input.currentStock,
+        description: input.description ?? null,
+        currentStock: input.quantity,
         minimumStock: input.minimumStock,
       },
       select: productSelect,
     });
 
-    if (input.currentStock > 0) {
+    if (input.quantity > 0) {
       await tx.stockMovement.create({
         data: {
           productId: createdProduct.id,
           type: 'adjustment',
-          quantityDelta: input.currentStock,
+          quantityDelta: input.quantity,
           quantityBefore: 0,
-          quantityAfter: input.currentStock,
+          quantityAfter: input.quantity,
           reason: 'Initial stock creation',
           createdById: actor.id,
         },
@@ -290,14 +372,30 @@ export const updateProduct = async (productId: string, actor: Express.User, inpu
       where: { id: productId },
       data: {
         name: input.name,
-        unitPrice: input.unitPrice === undefined ? undefined : roundCurrency(input.unitPrice),
+        unitPrice: input.price === undefined ? undefined : roundCurrency(input.price),
         category: input.category,
-        isOrganic: input.isOrganic,
+        isOrganic: input.isBio,
         unit: input.unit,
+        description: input.description,
+        currentStock: input.quantity,
         minimumStock: input.minimumStock,
       },
       select: productSelect,
     });
+
+    if (input.quantity !== undefined && input.quantity !== existingProduct.currentStock) {
+      await tx.stockMovement.create({
+        data: {
+          productId,
+          type: 'adjustment',
+          quantityDelta: roundCurrency(input.quantity - existingProduct.currentStock),
+          quantityBefore: existingProduct.currentStock,
+          quantityAfter: input.quantity,
+          reason: 'Inline inventory edit',
+          createdById: actor.id,
+        },
+      });
+    }
 
     await createAuditLog(tx, {
       actorId: actor.id,
@@ -316,6 +414,56 @@ export const updateProduct = async (productId: string, actor: Express.User, inpu
   });
 
   return serializeProduct(updatedProduct);
+};
+
+export const deleteProduct = async (productId: string, actor: Express.User) => {
+  const product = await prisma.product.findUnique({
+    where: { id: productId },
+    select: {
+      id: true,
+      name: true,
+      _count: {
+        select: {
+          invoiceItems: true,
+          outputItems: true,
+        },
+      },
+    },
+  });
+
+  if (!product) {
+    throw new AppError(404, 'Product not found');
+  }
+
+  if (product._count.invoiceItems > 0 || product._count.outputItems > 0) {
+    throw new AppError(409, 'Product is referenced in inventory history and cannot be deleted');
+  }
+
+  await prisma.$transaction(async (tx) => {
+    await tx.stockMovement.deleteMany({
+      where: { productId },
+    });
+
+    await tx.auditLog.deleteMany({
+      where: { productId },
+    });
+
+    await tx.product.delete({
+      where: { id: productId },
+    });
+
+    await createAuditLog(tx, {
+      actorId: actor.id,
+      entityType: 'product',
+      entityId: productId,
+      action: 'delete',
+      description: `Deleted product ${product.name}`,
+      payload: {
+        productId,
+        name: product.name,
+      } as Prisma.InputJsonValue,
+    });
+  });
 };
 
 export const adjustProductStock = async (productId: string, actor: Express.User, input: StockAdjustmentInput) => {

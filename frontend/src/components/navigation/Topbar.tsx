@@ -9,7 +9,8 @@ import { useAppStore } from '../../store/useAppStore';
 
 const titleMap: Record<string, string> = {
   '/dashboard': 'Cockpit restauration',
-  '/products': 'Catalogue et stock',
+  '/products': 'Inventaire',
+  '/products/new': 'Nouveau produit',
   '/purchase-invoices': 'Factures d entree',
   '/outputs': 'Sorties de service',
   '/journal': 'Journal quotidien',

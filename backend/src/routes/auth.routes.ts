@@ -4,6 +4,7 @@ import {
   createFirebaseSession,
   ensureFirebaseAuthConfigured,
   getSession,
+  getWorkspaceBootstrap,
   logout,
 } from '../controllers/auth.controller';
 import { requireAuth, requireCsrf } from '../middlewares/auth';

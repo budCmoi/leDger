@@ -12,6 +12,7 @@ const LandingPage = lazy(() => import('./pages/LandingPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
 const ProductsPage = lazy(() => import('./pages/ProductsPage'));
+const NewProductPage = lazy(() => import('./pages/NewProductPage'));
 const InvoicesPage = lazy(() => import('./pages/InvoicesPage'));
 const OutputsPage = lazy(() => import('./pages/OutputsPage'));
 const JournalPage = lazy(() => import('./pages/JournalPage'));
@@ -40,6 +41,7 @@ const App = () => {
             <Route element={<AppLayout />}>
               <Route element={<DashboardPage />} path="/dashboard" />
               <Route element={<ProductsPage />} path="/products" />
+              <Route element={<NewProductPage />} path="/products/new" />
               <Route element={<InvoicesPage />} path="/purchase-invoices" />
               <Route element={<OutputsPage />} path="/outputs" />
               <Route element={<JournalPage />} path="/journal" />

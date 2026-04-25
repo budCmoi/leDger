@@ -45,7 +45,9 @@ export const AppLayout = () => {
               <Outlet />
             </main>
           </div>
-          <SiteFooter />
+          <div className="mt-auto">
+            <SiteFooter />
+          </div>
         </div>
       </div>
     </div>
