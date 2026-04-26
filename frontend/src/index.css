@@ -17,6 +17,7 @@
 
 * {
   box-sizing: border-box;
+  border-radius: 0 !important;
 }
 
 html {
@@ -72,7 +73,6 @@ textarea {
 
 ::-webkit-scrollbar-thumb {
   background: rgba(245, 198, 91, 0.38);
-  border-radius: 999px;
 }
 
 @layer components {
@@ -81,7 +81,7 @@ textarea {
   }
 
   .premium-panel {
-    @apply rounded-[2rem] border border-white/10 bg-white/[0.04] shadow-soft backdrop-blur-xl;
+    @apply border border-white/10 bg-white/[0.04] shadow-soft backdrop-blur-xl;
   }
 
   .premium-grid {

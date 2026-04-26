@@ -39,8 +39,10 @@ export const AppLayout = () => {
         </Dialog>
 
         <div className="flex min-w-0 flex-1 flex-col gap-6">
-          <div className="premium-panel overflow-hidden">
+          <div className="sticky top-4 z-20">
             <Topbar onOpenNavigation={() => setMobileOpen(true)} />
+          </div>
+          <div className="premium-panel overflow-hidden">
             <main className="px-6 py-6 md:px-8 md:py-8">
               <Outlet />
             </main>

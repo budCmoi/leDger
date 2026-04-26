@@ -41,10 +41,10 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
   };
 
   return (
-    <div className="sticky top-0 z-20 border-b border-white/5 bg-black/30 px-6 py-5 backdrop-blur-xl md:px-8">
+    <header className="border border-white/10 bg-black/30 px-6 py-5 backdrop-blur-xl md:px-8">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <button className="rounded-full border border-white/10 p-3 text-white/70 lg:hidden" onClick={onOpenNavigation}>
+          <button className="border border-white/10 p-3 text-white/70 lg:hidden" onClick={onOpenNavigation}>
             <MenuIcon size={18} />
           </button>
           <div>
@@ -54,14 +54,14 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-white/45 md:flex">
+          <div className="hidden items-center gap-2 border border-white/10 bg-white/[0.04] px-4 py-3 text-white/45 md:flex">
             <Search size={14} />
             <span className="text-xs uppercase tracking-[0.18em]">Saisie et supervision operationnelle</span>
           </div>
 
           <Menu as="div" className="relative">
-            <MenuButton className="flex items-center gap-3 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-left text-white/80">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-paper">
+            <MenuButton className="flex items-center gap-3 border border-white/10 bg-white/[0.04] px-4 py-2 text-left text-white/80">
+              <div className="flex h-10 w-10 items-center justify-center bg-accent text-paper">
                 {user?.name?.slice(0, 1) ?? 'L'}
               </div>
               <div className="hidden sm:block">
@@ -71,12 +71,12 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
             </MenuButton>
             <MenuItems anchor="bottom end" className="premium-panel mt-3 w-56 p-2 outline-none">
               <MenuItem>
-                <button className="w-full rounded-2xl px-4 py-3 text-left text-sm text-white/70 transition hover:bg-white/[0.06] hover:text-white" onClick={() => navigate('/profile')}>
+                <button className="w-full px-4 py-3 text-left text-sm text-white/70 transition hover:bg-white/[0.06] hover:text-white" onClick={() => navigate('/profile')}>
                   Profile settings
                 </button>
               </MenuItem>
               <MenuItem>
-                <Button className="mt-2 justify-start rounded-2xl px-4 py-3 text-left text-sm" disabled={loggingOut} fullWidth onClick={handleLogout} variant="ghost">
+                <Button className="mt-2 justify-start px-4 py-3 text-left text-sm" disabled={loggingOut} fullWidth onClick={handleLogout} variant="ghost">
                   <LogOut size={15} />
                   {loggingOut ? 'Closing session' : 'Log out'}
                 </Button>
@@ -85,6 +85,6 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
           </Menu>
         </div>
       </div>
-    </div>
+    </header>
   );
 };
