@@ -9,3 +9,6 @@ dist
 !frontend/.env.example
 *.tsbuildinfo
 coverage
+artifacts
+desktop/**/bin
+desktop/**/obj

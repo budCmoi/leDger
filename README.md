@@ -183,6 +183,54 @@ npm run build --workspace frontend
 npm run typecheck --workspace frontend
 ```
 
+## Desktop Windows
+
+Le repo contient maintenant un shell desktop Windows en C# WPF dans [desktop/LeDger.Desktop/LeDger.Desktop.csproj](desktop/LeDger.Desktop/LeDger.Desktop.csproj).
+
+Architecture retenue :
+
+- le backend Node compile en mode production et sert deja [frontend/dist](frontend/dist) sur http://127.0.0.1:4000
+- l application C# demarre ce backend localement
+- la fenetre Windows embarque l interface dans WebView2
+- le packaging Windows embarque aussi un node.exe portable pour eviter une dependance Node globale sur le poste cible
+
+Prerequis pour generer l EXE Windows :
+
+- Windows 10/11
+- .NET SDK 8
+- WebView2 Runtime Microsoft Edge
+- npm install deja execute a la racine du repo
+
+Commande de build Windows depuis PowerShell :
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\build-windows-desktop.ps1
+```
+
+Sortie produite :
+
+- [artifacts/windows/LeDger.Desktop](artifacts/windows/LeDger.Desktop)
+- executable principal : LeDger.Desktop.exe
+
+Ce dossier publie contient :
+
+- l EXE C#
+- le backend compile dans backend/dist
+- le frontend compile dans frontend/dist
+- les dependances Node runtime via node_modules
+- un runtime Node portable dans runtime/node.exe
+
+Variables d environnement desktop :
+
+- si un fichier backend/.env existe, le script le copie dans le package Windows
+- le shell C# force NODE_ENV=production, PORT=4000 et CLIENT_URL vers localhost
+- si tu veux personnaliser MongoDB, Firebase ou JWT pour la version Windows, configure backend/.env avant de lancer le script
+
+Limites actuelles :
+
+- le build .exe ne peut pas etre valide depuis macOS, il doit etre publie sur une machine Windows avec dotnet
+- l application Windows reste dependante de WebView2 Runtime sur le poste client
+
 ## Variables backend
 
 La configuration est centralisee dans [backend/src/config/env.ts](backend/src/config/env.ts).
