@@ -1,0 +1,38 @@
+{
+  "appId": "com.ledger.desktop",
+  "productName": "LeDger Desktop",
+  "files": [
+    "desktop/electron/**/*",
+    "backend/dist/**/*",
+    "frontend/dist/**/*",
+    "backend/.env",
+    ".env",
+    "package.json"
+  ],
+  "asar": true,
+  "directories": {
+    "output": "artifacts/electron"
+  },
+  "mac": {
+    "target": [
+      "dmg"
+    ],
+    "category": "public.app-category.business"
+  },
+  "win": {
+    "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64"
+        ]
+      }
+    ]
+  },
+  "linux": {
+    "target": [
+      "AppImage"
+    ]
+  },
+  "npmRebuild": false
+}

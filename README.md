@@ -231,6 +231,43 @@ Limites actuelles :
 - le build .exe ne peut pas etre valide depuis macOS, il doit etre publie sur une machine Windows avec dotnet
 - l application Windows reste dependante de WebView2 Runtime sur le poste client
 
+## Desktop Electron multiplateforme
+
+Une version Electron est disponible pour produire des packages Windows, macOS et Linux depuis la meme base React + backend.
+
+Fichiers principaux :
+
+- [desktop/electron/main.js](desktop/electron/main.js)
+- [desktop/electron/builder.json](desktop/electron/builder.json)
+
+Mode developpement desktop (fenetre Electron + backend + frontend Vite) :
+
+```bash
+npm run desktop:dev
+```
+
+Mode packaging multiplateforme :
+
+```bash
+npm run desktop:build
+```
+
+Ce mode :
+
+- build le backend et le frontend
+- cree un package Electron dans [artifacts/electron](artifacts/electron)
+- genere les cibles configurees : NSIS (Windows), DMG (macOS), AppImage (Linux)
+
+Comportement runtime Electron :
+
+- en dev, la fenetre charge http://localhost:5173
+- en package, Electron lance le backend compile et charge http://127.0.0.1:4000
+
+Notes importantes :
+
+- la creation d installateurs est platform-sensitive (pour un vrai .exe il faut builder depuis Windows)
+- si tu as besoin d un backend avec variables custom, renseigne backend/.env avant le packaging
+
 ## Variables backend
 
 La configuration est centralisee dans [backend/src/config/env.ts](backend/src/config/env.ts).

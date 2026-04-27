@@ -2,6 +2,7 @@
   "name": "ledger-premium-saas",
   "version": "1.0.0",
   "private": true,
+  "main": "desktop/electron/main.js",
   "workspaces": [
     "frontend",
     "backend"
@@ -11,11 +12,18 @@
     "db:down": "sh -c 'if command -v docker-compose >/dev/null 2>&1; then docker-compose down; elif command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then docker compose down; else echo \"Docker Compose is required to stop MongoDB.\"; exit 1; fi'",
     "db:logs": "sh -c 'if command -v docker-compose >/dev/null 2>&1; then docker-compose logs -f mongo; elif command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then docker compose logs -f mongo; else echo \"Docker Compose is required to read MongoDB logs.\"; exit 1; fi'",
     "dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\"",
+    "electron:dev": "cross-env ELECTRON_RENDERER_URL=http://localhost:5173 electron desktop/electron/main.js",
+    "desktop:dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\" \"wait-on tcp:4000 tcp:5173 && npm run electron:dev\"",
     "build": "npm run build --workspace backend && npm run build --workspace frontend",
+    "desktop:build": "npm run build && electron-builder --config desktop/electron/builder.json",
     "start": "npm run start --workspace backend",
     "typecheck": "npm run typecheck --workspace backend && npm run typecheck --workspace frontend"
   },
   "devDependencies": {
-    "concurrently": "^9.1.0"
+    "concurrently": "^9.1.0",
+    "cross-env": "^7.0.3",
+    "electron": "^33.3.2",
+    "electron-builder": "^25.1.8",
+    "wait-on": "^8.0.3"
   }
 }

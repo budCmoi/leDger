@@ -1,6 +1,7 @@
 node_modules
 dist
 .npm-cache
+.npm-cache-local
 .tmp-npm-cache
 .env
 .env.*
@@ -12,3 +13,4 @@ coverage
 artifacts
 desktop/**/bin
 desktop/**/obj
+.electron
