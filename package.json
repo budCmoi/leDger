@@ -16,6 +16,8 @@
     "desktop:dev": "concurrently \"npm run dev --workspace backend\" \"npm run dev --workspace frontend\" \"wait-on tcp:4000 tcp:5173 && npm run electron:dev\"",
     "build": "npm run build --workspace backend && npm run build --workspace frontend",
     "desktop:build": "npm run build && electron-builder --config desktop/electron/builder.json",
+    "desktop:build:win": "npm run build && electron-builder --config desktop/electron/builder.json --win nsis --x64",
+    "desktop:build:mac": "npm run build && electron-builder --config desktop/electron/builder.json --mac dmg",
     "start": "npm run start --workspace backend",
     "typecheck": "npm run typecheck --workspace backend && npm run typecheck --workspace frontend"
   },

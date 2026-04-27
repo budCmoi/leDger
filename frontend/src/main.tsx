@@ -16,6 +16,9 @@ const NewProductPage = lazy(() => import('./pages/NewProductPage'));
 const InvoicesPage = lazy(() => import('./pages/InvoicesPage'));
 const OutputsPage = lazy(() => import('./pages/OutputsPage'));
 const JournalPage = lazy(() => import('./pages/JournalPage'));
+const TransactionsPage = lazy(() => import('./pages/TransactionsPage'));
+const ReportsPage = lazy(() => import('./pages/ReportsPage'));
+const ProfilePage = lazy(() => import('./pages/ProfilePage'));
 const AdminPage = lazy(() => import('./pages/AdminPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
@@ -45,6 +48,9 @@ const App = () => {
               <Route element={<InvoicesPage />} path="/purchase-invoices" />
               <Route element={<OutputsPage />} path="/outputs" />
               <Route element={<JournalPage />} path="/journal" />
+              <Route element={<TransactionsPage />} path="/transactions" />
+              <Route element={<ReportsPage />} path="/reports" />
+              <Route element={<ProfilePage />} path="/profile" />
               <Route element={<AdminRoute />}>
                 <Route element={<AdminPage />} path="/admin" />
               </Route>

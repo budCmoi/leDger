@@ -252,6 +252,18 @@ Mode packaging multiplateforme :
 npm run desktop:build
 ```
 
+Commande cible Windows (genere un installateur .exe NSIS) :
+
+```bash
+npm run desktop:build:win
+```
+
+Commande cible macOS (genere un installateur .dmg) :
+
+```bash
+npm run desktop:build:mac
+```
+
 Ce mode :
 
 - build le backend et le frontend
@@ -266,6 +278,7 @@ Comportement runtime Electron :
 Notes importantes :
 
 - la creation d installateurs est platform-sensitive (pour un vrai .exe il faut builder depuis Windows)
+- pour un paquet macOS exploitable, lance la commande de build depuis macOS
 - si tu as besoin d un backend avec variables custom, renseigne backend/.env avant le packaging
 
 ## Variables backend
