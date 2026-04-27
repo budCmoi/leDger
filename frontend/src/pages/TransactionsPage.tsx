@@ -6,7 +6,13 @@ import { Button } from '../components/common/Button';
 import { Card } from '../components/common/Card';
 import { PageTransition } from '../components/common/PageTransition';
 import { SectionHeading } from '../components/common/SectionHeading';
-import { TransactionForm, type TransactionFormPayload } from '../components/forms/TransactionForm';
+import {
+  TransactionForm,
+  transactionCategoryLabels,
+  transactionStatusLabels,
+  transactionTypeLabels,
+  type TransactionFormPayload,
+} from '../components/forms/TransactionForm';
 import { formatCurrency, formatDate } from '../lib/utils';
 import { dashboardApi, transactionApi } from '../services/api';
 import { useAppStore } from '../store/useAppStore';
@@ -64,7 +70,7 @@ export default function TransactionsPage() {
   };
 
   const handleDelete = async (transactionId: string) => {
-    if (!window.confirm('Delete this transaction?')) {
+    if (!window.confirm('Supprimer cette transaction ?')) {
       return;
     }
 
@@ -82,9 +88,9 @@ export default function TransactionsPage() {
     <PageTransition>
       <div className="space-y-8">
         <SectionHeading
-          action={<input className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25" onChange={(event) => setSearch(event.target.value)} placeholder="Search transactions" value={search} />}
-          description="Track income and expenses with category control, tags, counterparties and polished editing flows."
-          eyebrow="Accounting"
+          action={<input className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none placeholder:text-white/25" onChange={(event) => setSearch(event.target.value)} placeholder="Rechercher une transaction" value={search} />}
+          description="Suivez les encaissements et les depenses avec categories, etiquettes, contreparties et edition fluide."
+          eyebrow="Comptabilite"
           title="Transactions"
         />
 
@@ -96,11 +102,11 @@ export default function TransactionsPage() {
                   <div>
                     <div className="flex flex-wrap items-center gap-3">
                       <h3 className="text-lg uppercase tracking-[0.16em] text-white">{transaction.title}</h3>
-                      <Badge>{transaction.type}</Badge>
-                      <Badge>{transaction.status}</Badge>
+                      <Badge>{transactionTypeLabels[transaction.type]}</Badge>
+                      <Badge>{transactionStatusLabels[transaction.status]}</Badge>
                     </div>
                     <p className="mt-2 text-sm text-white/50">
-                      {transaction.category} • {transaction.counterparty ?? 'No counterparty'} • {formatDate(transaction.date)}
+                      {transactionCategoryLabels[transaction.category] ?? transaction.category} • {transaction.counterparty ?? 'Aucune contrepartie'} • {formatDate(transaction.date)}
                     </p>
                   </div>
                   <p className="text-lg uppercase tracking-[0.16em] text-white">{formatCurrency(transaction.amount, transaction.currency)}</p>
@@ -115,11 +121,11 @@ export default function TransactionsPage() {
                 <div className="flex gap-3">
                   <Button onClick={() => setEditing(transaction)} variant="secondary">
                     <Pencil size={15} />
-                    Edit
+                    Modifier
                   </Button>
                   <Button onClick={() => void handleDelete(transaction.id)} variant="ghost">
                     <Trash2 size={15} />
-                    Delete
+                    Supprimer
                   </Button>
                 </div>
               </Card>
@@ -128,9 +134,9 @@ export default function TransactionsPage() {
 
           <Card>
             <div className="mb-6 space-y-2">
-              <p className="premium-label">Editor</p>
-              <h2 className="text-xl uppercase tracking-[0.16em] text-white">{editing ? 'Update entry' : 'New transaction'}</h2>
-              <p className="text-sm text-white/55">Transactions are validated with Zod on the client and sanitized on the API.</p>
+              <p className="premium-label">Edition</p>
+              <h2 className="text-xl uppercase tracking-[0.16em] text-white">{editing ? 'Mettre a jour l entree' : 'Nouvelle transaction'}</h2>
+              <p className="text-sm text-white/55">Les transactions sont validees par Zod dans le client puis assainies par l API.</p>
             </div>
             <TransactionForm
               busy={busy}
@@ -139,7 +145,7 @@ export default function TransactionsPage() {
               onCancel={editing ? () => setEditing(undefined) : undefined}
               onSubmit={handleSubmit}
             />
-            {user ? <p className="mt-4 text-xs uppercase tracking-[0.2em] text-white/35">Base currency {user.currency}</p> : null}
+            {user ? <p className="mt-4 text-xs uppercase tracking-[0.2em] text-white/35">Devise de base {user.currency}</p> : null}
           </Card>
         </div>
       </div>

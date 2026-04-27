@@ -487,7 +487,7 @@ export default function ProductsPage() {
             <span>
               {products.length.toLocaleString('fr-FR')} affiches / {total.toLocaleString('fr-FR')} references
             </span>
-            <span>Pagination backend active · virtualisation react-window</span>
+            <span>Pagination backend active · liste virtualisee react-window</span>
           </div>
 
           <div className="grid grid-cols-[minmax(0,2.4fr)_130px_112px_112px_112px_88px] gap-3 border-b border-white/8 px-4 py-3 text-[11px] uppercase tracking-[0.2em] text-white/34">

@@ -15,6 +15,9 @@ const titleMap: Record<string, string> = {
   '/outputs': 'Sorties de service',
   '/journal': 'Journal quotidien',
   '/admin': 'Console admin',
+  '/transactions': 'Transactions',
+  '/reports': 'Rapports',
+  '/profile': 'Profil',
 };
 
 interface TopbarProps {
@@ -48,8 +51,8 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
             <MenuIcon size={18} />
           </button>
           <div>
-            <p className="premium-label">{location.pathname.replace('/', '') || 'overview'}</p>
-            <h1 className="text-xl uppercase tracking-[0.22em] text-white">{titleMap[location.pathname] ?? 'Restaurant Ops'}</h1>
+            <p className="premium-label">{location.pathname.replace('/', '') || 'accueil'}</p>
+            <h1 className="text-xl uppercase tracking-[0.22em] text-white">{titleMap[location.pathname] ?? 'Operations restauration'}</h1>
           </div>
         </div>
 
@@ -65,20 +68,20 @@ export const Topbar = ({ onOpenNavigation }: TopbarProps) => {
                 {user?.name?.slice(0, 1) ?? 'L'}
               </div>
               <div className="hidden sm:block">
-                <p className="text-sm uppercase tracking-[0.15em] text-white">{user?.name ?? 'Workspace'}</p>
-                <p className="text-xs text-white/45">{user?.identifier ?? user?.companyName ?? 'Restaurant Ops'}</p>
+                <p className="text-sm uppercase tracking-[0.15em] text-white">{user?.name ?? 'Espace'}</p>
+                <p className="text-xs text-white/45">{user?.identifier ?? user?.companyName ?? 'Operations restauration'}</p>
               </div>
             </MenuButton>
             <MenuItems anchor="bottom end" className="premium-panel mt-3 w-56 p-2 outline-none">
               <MenuItem>
                 <button className="w-full px-4 py-3 text-left text-sm text-white/70 transition hover:bg-white/[0.06] hover:text-white" onClick={() => navigate('/profile')}>
-                  Profile settings
+                  Parametres du profil
                 </button>
               </MenuItem>
               <MenuItem>
                 <Button className="mt-2 justify-start px-4 py-3 text-left text-sm" disabled={loggingOut} fullWidth onClick={handleLogout} variant="ghost">
                   <LogOut size={15} />
-                  {loggingOut ? 'Closing session' : 'Log out'}
+                  {loggingOut ? 'Fermeture de session' : 'Se deconnecter'}
                 </Button>
               </MenuItem>
             </MenuItems>

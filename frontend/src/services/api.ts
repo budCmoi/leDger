@@ -52,7 +52,7 @@ const normalizeUser = (user: Partial<User> & Pick<User, 'id' | 'role' | 'name'>)
   email: user.email ?? '',
   name: user.name ?? user.fullName ?? '',
   avatar: user.avatar,
-  companyName: user.companyName ?? 'Restaurant Ops',
+  companyName: user.companyName ?? 'Operations restauration',
   role: user.role,
   currency: user.currency ?? 'USD',
   isActive: user.isActive ?? true,

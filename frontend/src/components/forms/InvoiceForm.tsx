@@ -86,46 +86,46 @@ export const InvoiceForm = ({ busy, initialValues, onCancel, onSubmit }: Invoice
   return (
     <form className="space-y-4" onSubmit={handleSubmit}>
       <div className="grid gap-4 md:grid-cols-2">
-        <input className={inputClassName} placeholder="Invoice number" {...form.register('invoiceNumber')} />
+        <input className={inputClassName} placeholder="Numero de facture" {...form.register('invoiceNumber')} />
         <select className={cn(inputClassName, 'uppercase tracking-[0.18em]')} {...form.register('status')}>
           {['draft', 'unpaid', 'paid', 'overdue'].map((status) => (
             <option key={status} value={status}>
-              {status}
+              {{ draft: 'brouillon', unpaid: 'impayee', paid: 'payee', overdue: 'en retard' }[status]}
             </option>
           ))}
         </select>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <input className={inputClassName} placeholder="Client name" {...form.register('clientName')} />
-        <input className={inputClassName} placeholder="Client email" {...form.register('clientEmail')} />
+        <input className={inputClassName} placeholder="Nom du client" {...form.register('clientName')} />
+        <input className={inputClassName} placeholder="Email du client" {...form.register('clientEmail')} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <input className={inputClassName} placeholder="Company name" {...form.register('companyName')} />
-        <input className={inputClassName} placeholder="Currency" {...form.register('currency')} />
+        <input className={inputClassName} placeholder="Nom de la societe" {...form.register('companyName')} />
+        <input className={inputClassName} placeholder="Devise" {...form.register('currency')} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
         <input className={inputClassName} type="date" {...form.register('issueDate')} />
         <input className={inputClassName} type="date" {...form.register('dueDate')} />
-        <input className={inputClassName} placeholder="Tax" step="0.01" type="number" {...form.register('tax')} />
+        <input className={inputClassName} placeholder="Taxe" step="0.01" type="number" {...form.register('tax')} />
       </div>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <p className="premium-label">Line items</p>
+          <p className="premium-label">Lignes</p>
           <Button onClick={() => append({ description: '', quantity: 1, unitPrice: 0 })} variant="ghost">
             <Plus size={16} />
-            Add row
+            Ajouter une ligne
           </Button>
         </div>
 
         {fields.map((field, index) => (
           <div key={field.id} className="grid gap-3 rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-4 md:grid-cols-[minmax(0,2fr)_minmax(0,0.75fr)_minmax(0,1fr)_auto]">
             <input className={inputClassName} placeholder="Description" {...form.register(`items.${index}.description`)} />
-            <input className={inputClassName} placeholder="Qty" type="number" {...form.register(`items.${index}.quantity`)} />
-            <input className={inputClassName} placeholder="Unit price" step="0.01" type="number" {...form.register(`items.${index}.unitPrice`)} />
+            <input className={inputClassName} placeholder="Qte" type="number" {...form.register(`items.${index}.quantity`)} />
+            <input className={inputClassName} placeholder="Prix unitaire" step="0.01" type="number" {...form.register(`items.${index}.unitPrice`)} />
             <Button className="self-stretch" onClick={() => remove(index)} variant="secondary">
               <Trash2 size={16} />
             </Button>
@@ -137,11 +137,11 @@ export const InvoiceForm = ({ busy, initialValues, onCancel, onSubmit }: Invoice
 
       <div className="premium-panel flex flex-col gap-2 rounded-[1.5rem] p-4 text-sm text-white/65">
         <div className="flex items-center justify-between">
-          <span>Subtotal</span>
+          <span>Sous-total</span>
           <span>{formatCurrency(subtotal, watchedCurrency)}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span>Tax</span>
+          <span>Taxe</span>
           <span>{formatCurrency(Number(watchedTax || 0), watchedCurrency)}</span>
         </div>
         <div className="flex items-center justify-between border-t border-white/10 pt-2 text-white">
@@ -152,11 +152,11 @@ export const InvoiceForm = ({ busy, initialValues, onCancel, onSubmit }: Invoice
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button className="sm:flex-1" disabled={busy} type="submit">
-          {initialValues ? 'Update invoice' : 'Create invoice'}
+          {initialValues ? 'Mettre a jour la facture' : 'Creer la facture'}
         </Button>
         {onCancel ? (
           <Button className="sm:flex-1" onClick={onCancel} variant="secondary">
-            Cancel
+            Annuler
           </Button>
         ) : null}
       </div>

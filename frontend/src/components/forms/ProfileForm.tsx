@@ -54,15 +54,15 @@ export const ProfileForm = ({ busy, onSubmit, onUploadAvatar, user }: ProfileFor
   return (
     <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
       <div className="grid gap-4 md:grid-cols-2">
-        <input className={inputClassName} placeholder="Full name" {...form.register('name')} />
+        <input className={inputClassName} placeholder="Nom complet" {...form.register('name')} />
         <div className="rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white/70">
-          <p className="text-[11px] uppercase tracking-[0.22em] text-white/35">Authentication email</p>
+          <p className="text-[11px] uppercase tracking-[0.22em] text-white/35">Email d authentification</p>
           <p className="mt-2 break-all text-white">{user.email}</p>
         </div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <input className={inputClassName} placeholder="Company name" {...form.register('companyName')} />
+        <input className={inputClassName} placeholder="Nom de la societe" {...form.register('companyName')} />
         <Controller
           control={form.control}
           name="currency"
@@ -86,18 +86,18 @@ export const ProfileForm = ({ busy, onSubmit, onUploadAvatar, user }: ProfileFor
         />
       </div>
 
-      <input className={inputClassName} placeholder="Avatar URL" {...form.register('avatar')} />
+      <input className={inputClassName} placeholder="URL de l avatar" {...form.register('avatar')} />
 
       <label className="flex cursor-pointer items-center justify-between rounded-[1.5rem] border border-dashed border-white/12 bg-white/[0.03] px-4 py-4 text-sm text-white/65 transition hover:border-accent/50 hover:text-white">
         <span className="flex items-center gap-3 uppercase tracking-[0.18em]">
           <Upload size={16} />
-          Upload avatar image
+          Televerser une image d avatar
         </span>
         <input className="hidden" onChange={handleAvatarChange} type="file" />
       </label>
 
       <Button disabled={busy} fullWidth type="submit">
-        Save profile
+        Enregistrer le profil
       </Button>
     </form>
   );

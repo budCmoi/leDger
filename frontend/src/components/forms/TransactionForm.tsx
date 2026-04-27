@@ -10,6 +10,26 @@ import type { Transaction } from '../../types';
 
 const transactionCategories = ['Sales', 'Consulting', 'Subscription', 'Food', 'Rent', 'SaaS', 'Travel', 'Marketing', 'Taxes', 'Other'];
 const transactionTypes = ['income', 'expense'] as const;
+export const transactionCategoryLabels: Record<string, string> = {
+  Sales: 'Ventes',
+  Consulting: 'Conseil',
+  Subscription: 'Abonnement',
+  Food: 'Alimentaire',
+  Rent: 'Loyer',
+  SaaS: 'SaaS',
+  Travel: 'Deplacements',
+  Marketing: 'Marketing',
+  Taxes: 'Taxes',
+  Other: 'Autre',
+};
+export const transactionTypeLabels: Record<(typeof transactionTypes)[number], string> = {
+  income: 'Entree',
+  expense: 'Depense',
+};
+export const transactionStatusLabels: Record<'pending' | 'cleared', string> = {
+  pending: 'En attente',
+  cleared: 'Validee',
+};
 
 const transactionFormSchema = z.object({
   type: z.enum(transactionTypes),
@@ -89,13 +109,13 @@ export const TransactionForm = ({ busy, initialValues, onCancel, onSubmit }: Tra
             <Listbox value={field.value} onChange={field.onChange}>
               <div className="relative">
                 <ListboxButton className={cn(inputClassName, 'flex items-center justify-between uppercase tracking-[0.18em]')}>
-                  {field.value}
+                  {transactionTypeLabels[field.value]}
                   <ChevronDown size={16} />
                 </ListboxButton>
                 <ListboxOptions anchor="bottom start" className="premium-panel z-20 mt-2 w-[var(--button-width)] p-2 outline-none">
                   {transactionTypes.map((type) => (
                     <ListboxOption key={type} className="cursor-pointer rounded-xl px-4 py-3 text-sm uppercase tracking-[0.18em] text-white/70 data-[focus]:bg-white/[0.06] data-[focus]:text-white" value={type}>
-                      {type}
+                      {transactionTypeLabels[type]}
                     </ListboxOption>
                   ))}
                 </ListboxOptions>
@@ -111,13 +131,13 @@ export const TransactionForm = ({ busy, initialValues, onCancel, onSubmit }: Tra
             <Listbox value={field.value} onChange={field.onChange}>
               <div className="relative">
                 <ListboxButton className={cn(inputClassName, 'flex items-center justify-between uppercase tracking-[0.18em]')}>
-                  {field.value}
+                  {transactionCategoryLabels[field.value] ?? field.value}
                   <ChevronDown size={16} />
                 </ListboxButton>
                 <ListboxOptions anchor="bottom start" className="premium-panel z-20 mt-2 w-[var(--button-width)] max-h-72 overflow-auto p-2 outline-none">
                   {transactionCategories.map((category) => (
                     <ListboxOption key={category} className="cursor-pointer rounded-xl px-4 py-3 text-sm uppercase tracking-[0.18em] text-white/70 data-[focus]:bg-white/[0.06] data-[focus]:text-white" value={category}>
-                      {category}
+                      {transactionCategoryLabels[category] ?? category}
                     </ListboxOption>
                   ))}
                 </ListboxOptions>
@@ -127,17 +147,17 @@ export const TransactionForm = ({ busy, initialValues, onCancel, onSubmit }: Tra
         />
       </div>
 
-      <input className={inputClassName} placeholder="Transaction title" {...form.register('title')} />
+      <input className={inputClassName} placeholder="Intitule de la transaction" {...form.register('title')} />
 
       <div className="grid gap-4 md:grid-cols-3">
-        <input className={inputClassName} placeholder="Amount" step="0.01" type="number" {...form.register('amount')} />
-        <input className={inputClassName} placeholder="Currency" {...form.register('currency')} />
+        <input className={inputClassName} placeholder="Montant" step="0.01" type="number" {...form.register('amount')} />
+        <input className={inputClassName} placeholder="Devise" {...form.register('currency')} />
         <input className={inputClassName} type="date" {...form.register('date')} />
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <input className={inputClassName} placeholder="Client or vendor" {...form.register('counterparty')} />
-        <input className={inputClassName} placeholder="Tags separated by commas" {...form.register('tags')} />
+        <input className={inputClassName} placeholder="Client ou fournisseur" {...form.register('counterparty')} />
+        <input className={inputClassName} placeholder="Etiquettes separees par des virgules" {...form.register('tags')} />
       </div>
 
       <Controller
@@ -147,13 +167,13 @@ export const TransactionForm = ({ busy, initialValues, onCancel, onSubmit }: Tra
           <Listbox value={field.value} onChange={field.onChange}>
             <div className="relative">
               <ListboxButton className={cn(inputClassName, 'flex items-center justify-between uppercase tracking-[0.18em]')}>
-                {field.value}
+                {transactionStatusLabels[field.value]}
                 <ChevronDown size={16} />
               </ListboxButton>
               <ListboxOptions anchor="bottom start" className="premium-panel z-20 mt-2 w-[var(--button-width)] p-2 outline-none">
                 {['cleared', 'pending'].map((status) => (
                   <ListboxOption key={status} className="cursor-pointer rounded-xl px-4 py-3 text-sm uppercase tracking-[0.18em] text-white/70 data-[focus]:bg-white/[0.06] data-[focus]:text-white" value={status}>
-                    {status}
+                    {transactionStatusLabels[status as 'pending' | 'cleared']}
                   </ListboxOption>
                 ))}
               </ListboxOptions>
@@ -166,11 +186,11 @@ export const TransactionForm = ({ busy, initialValues, onCancel, onSubmit }: Tra
 
       <div className="flex flex-col gap-3 sm:flex-row">
         <Button className="sm:flex-1" disabled={busy} type="submit">
-          {initialValues ? 'Update transaction' : 'Add transaction'}
+          {initialValues ? 'Mettre a jour la transaction' : 'Ajouter la transaction'}
         </Button>
         {onCancel ? (
           <Button className="sm:flex-1" onClick={onCancel} variant="secondary">
-            Cancel
+            Annuler
           </Button>
         ) : null}
       </div>

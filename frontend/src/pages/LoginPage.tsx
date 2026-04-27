@@ -146,38 +146,38 @@ export default function LoginPage() {
         <header className="flex items-center justify-between py-6">
           <div>
             <p className="premium-label">Ledger Premium</p>
-            <p className="mt-2 text-lg uppercase tracking-[0.28em] text-white">Secure sign in</p>
+            <p className="mt-2 text-lg uppercase tracking-[0.28em] text-white">Connexion securisee</p>
           </div>
           <Button onClick={() => navigate('/')} variant="secondary">
             <ArrowLeft size={16} />
-            Back home
+            Retour a l accueil
           </Button>
         </header>
 
         <main className="flex flex-1 items-center py-12">
           <div className="grid w-full gap-8 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
             <motion.div animate={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 20 }} transition={{ duration: 0.6 }}>
-              <Badge>Firebase email and password</Badge>
+              <Badge>Firebase email et mot de passe</Badge>
               <h1 className="mt-6 max-w-3xl text-4xl uppercase leading-[1.1] tracking-[0.16em] text-white md:text-6xl">
-                Secure access, real account creation and MongoDB-backed workspace data.
+                Acces securise, vrai compte utilisateur et donnees metier synchronisees.
               </h1>
               <p className="mt-6 max-w-2xl text-sm leading-8 text-white/60 md:text-base">
-                This route now handles email and password sign in through Firebase Auth, while the backend verifies the Firebase token, issues the application session and persists the user profile in MongoDB.
+                Cet ecran gere la connexion par email et mot de passe via Firebase Auth. Le backend verifie ensuite le token Firebase, ouvre la session applicative et charge l espace de travail.
               </p>
               <div className="mt-8 flex flex-wrap gap-3 text-xs uppercase tracking-[0.22em] text-white/45">
-                <span className="rounded-full border border-white/10 px-4 py-2">Email and password forms</span>
-                <span className="rounded-full border border-white/10 px-4 py-2">Firebase verified identity</span>
-                <span className="rounded-full border border-white/10 px-4 py-2">MongoDB-backed session data</span>
+                <span className="rounded-full border border-white/10 px-4 py-2">Formulaires email et mot de passe</span>
+                <span className="rounded-full border border-white/10 px-4 py-2">Identite verifiee par Firebase</span>
+                <span className="rounded-full border border-white/10 px-4 py-2">Session applicative protegee</span>
               </div>
             </motion.div>
 
             <motion.div animate={{ opacity: 1, x: 0 }} initial={{ opacity: 0, x: 24 }} transition={{ delay: 0.15, duration: 0.65 }}>
               <Card className="space-y-8 p-7 md:p-9">
                 <div className="space-y-3">
-                  <p className="premium-label">Authentication</p>
-                  <h2 className="text-2xl uppercase tracking-[0.18em] text-white">Create a session</h2>
+                  <p className="premium-label">Authentification</p>
+                  <h2 className="text-2xl uppercase tracking-[0.18em] text-white">Creer une session</h2>
                   <p className="text-sm leading-7 text-white/58">
-                    Choose whether to log into an existing workspace or create a new account. Once Firebase validates the identity, the API creates or updates the user in MongoDB and returns the protected app session.
+                    Choisis entre te connecter a un espace existant ou creer un nouveau compte. Une fois l identite validee par Firebase, l API cree ou met a jour l utilisateur puis retourne la session protegee.
                   </p>
                 </div>
 
@@ -189,7 +189,7 @@ export default function LoginPage() {
                     onClick={() => handleModeChange('signin')}
                     type="button"
                   >
-                    Sign in
+                    Connexion
                   </button>
                   <button
                     className={`rounded-[1.1rem] px-4 py-3 text-sm uppercase tracking-[0.18em] transition ${
@@ -198,7 +198,7 @@ export default function LoginPage() {
                     onClick={() => handleModeChange('signup')}
                     type="button"
                   >
-                    Sign up
+                    Inscription
                   </button>
                 </div>
 
@@ -220,7 +220,7 @@ export default function LoginPage() {
                       <input
                         autoComplete="email"
                         className={inputClassName}
-                        placeholder="Email"
+                        placeholder="Adresse email"
                         {...signInForm.register('email')}
                       />
                       {signInForm.formState.errors.email ? <p className={errorClassName}>{signInForm.formState.errors.email.message}</p> : null}
@@ -230,7 +230,7 @@ export default function LoginPage() {
                       <input
                         autoComplete="current-password"
                         className={inputClassName}
-                        placeholder="Password"
+                        placeholder="Mot de passe"
                         type="password"
                         {...signInForm.register('password')}
                       />
@@ -238,7 +238,7 @@ export default function LoginPage() {
                     </div>
 
                     <Button className="w-full justify-between" disabled={busy || !isFirebaseClientConfigured} type="submit">
-                      <span>{busy ? 'Opening workspace' : 'Sign in'}</span>
+                      <span>{busy ? 'Ouverture de l espace' : 'Se connecter'}</span>
                       <ArrowRight size={16} />
                     </Button>
                   </form>
@@ -246,17 +246,17 @@ export default function LoginPage() {
                   <form className="space-y-4" onSubmit={handleSignUp}>
                     <div className="grid gap-4 md:grid-cols-2">
                       <div className="space-y-2">
-                        <input className={inputClassName} placeholder="Full name" {...signUpForm.register('name')} />
+                        <input className={inputClassName} placeholder="Nom complet" {...signUpForm.register('name')} />
                         {signUpForm.formState.errors.name ? <p className={errorClassName}>{signUpForm.formState.errors.name.message}</p> : null}
                       </div>
                       <div className="space-y-2">
-                        <input className={inputClassName} placeholder="Company name" {...signUpForm.register('companyName')} />
+                        <input className={inputClassName} placeholder="Nom de la societe" {...signUpForm.register('companyName')} />
                         {signUpForm.formState.errors.companyName ? <p className={errorClassName}>{signUpForm.formState.errors.companyName.message}</p> : null}
                       </div>
                     </div>
 
                     <div className="space-y-2">
-                      <input autoComplete="email" className={inputClassName} placeholder="Email" {...signUpForm.register('email')} />
+                      <input autoComplete="email" className={inputClassName} placeholder="Adresse email" {...signUpForm.register('email')} />
                       {signUpForm.formState.errors.email ? <p className={errorClassName}>{signUpForm.formState.errors.email.message}</p> : null}
                     </div>
 
@@ -264,7 +264,7 @@ export default function LoginPage() {
                       <input
                         autoComplete="new-password"
                         className={inputClassName}
-                        placeholder="Password"
+                        placeholder="Mot de passe"
                         type="password"
                         {...signUpForm.register('password')}
                       />
@@ -272,7 +272,7 @@ export default function LoginPage() {
                     </div>
 
                     <Button className="w-full justify-between" disabled={busy || !isFirebaseClientConfigured} type="submit">
-                      <span>{busy ? 'Creating workspace' : 'Create account'}</span>
+                      <span>{busy ? 'Creation du compte' : 'Creer un compte'}</span>
                       <ArrowRight size={16} />
                     </Button>
                   </form>
@@ -280,7 +280,7 @@ export default function LoginPage() {
 
                 <div className="flex items-center gap-3">
                   <span className="h-px flex-1 bg-white/10" />
-                  <span className="text-xs uppercase tracking-widest text-white/30">or</span>
+                  <span className="text-xs uppercase tracking-widest text-white/30">ou</span>
                   <span className="h-px flex-1 bg-white/10" />
                 </div>
 
@@ -296,22 +296,22 @@ export default function LoginPage() {
                     <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
                     <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                   </svg>
-                  Continue with Google
+                  Continuer avec Google
                 </button>
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
                     <ShieldCheck className="text-accent4" size={18} />
-                    <p className="mt-4 text-sm uppercase tracking-[0.16em] text-white">Private routes</p>
+                    <p className="mt-4 text-sm uppercase tracking-[0.16em] text-white">Routes privees</p>
                     <p className="mt-2 text-sm leading-7 text-white/52">
-                      If you were trying to open a protected page, the app will restore your intended destination after the session is created.
+                      Si tu essayais d ouvrir une page protegee, l application te renverra vers la destination voulue une fois la session creee.
                     </p>
                   </div>
                   <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] p-5">
                     <LockKeyhole className="text-accent3" size={18} />
-                    <p className="mt-4 text-sm uppercase tracking-[0.16em] text-white">MongoDB sync</p>
+                    <p className="mt-4 text-sm uppercase tracking-[0.16em] text-white">Synchronisation compte</p>
                     <p className="mt-2 text-sm leading-7 text-white/52">
-                      Every successful Firebase authentication is mirrored in the MongoDB user collection before the dashboard data is loaded.
+                      Chaque authentification Firebase reussie est synchronisee cote application avant le chargement des donnees du tableau de bord.
                     </p>
                   </div>
                 </div>
@@ -319,10 +319,10 @@ export default function LoginPage() {
                 <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-4 text-sm leading-7 text-white/58">
                   <div className="flex items-center gap-3 text-white">
                     <Sparkles className="text-accent" size={16} />
-                    <span className="text-xs uppercase tracking-[0.2em]">Session design</span>
+                    <span className="text-xs uppercase tracking-[0.2em]">Architecture de session</span>
                   </div>
                   <p className="mt-3">
-                    Firebase authenticates the identity. The Express API verifies the token, issues the protected app cookies and serves MongoDB-backed workspace data.
+                    Firebase authentifie l identite. L API Express verifie le token, emet les cookies proteges puis sert les donnees de l espace de travail.
                   </p>
                 </div>
               </Card>

@@ -9,16 +9,16 @@ import { SiteFooter } from '../components/common/SiteFooter';
 import { useAppStore } from '../store/useAppStore';
 
 const showcaseMetrics = [
-  { label: 'Stock visibility', value: '24/7' },
-  { label: 'Protected admin access', value: 'RBAC' },
-  { label: 'Firebase authentication', value: 'Email/Password' },
+  { label: 'Visibilite du stock', value: '24/7' },
+  { label: 'Acces admin protege', value: 'RBAC' },
+  { label: 'Authentification Firebase', value: 'Email / mot de passe' },
 ];
 
 const features = [
-  'Live cash overview with premium charting',
-  'Transactions, invoices and downloadable reports',
-  'Role-based admin panel behind a private route',
-  'Firebase Auth, JWT cookies, CSRF-aware requests and sanitization',
+  'Vue de caisse en direct avec graphiques premium',
+  'Transactions, factures et rapports telechargeables',
+  'Console admin par roles derriere une route protegee',
+  'Firebase Auth, cookies JWT, protection CSRF et sanitation des donnees',
 ];
 
 export default function LandingPage() {
@@ -35,12 +35,12 @@ export default function LandingPage() {
         <header className="flex items-center justify-between py-6">
           <div>
             <p className="premium-label">Ledger Premium</p>
-            <p className="mt-2 text-lg uppercase tracking-[0.28em] text-white">Restaurant Operations</p>
+            <p className="mt-2 text-lg uppercase tracking-[0.28em] text-white">Operations restauration</p>
           </div>
           <div className="flex items-center gap-3">
-            <Badge>Black / White / Yellow</Badge>
+            <Badge>Noir / Blanc / Jaune</Badge>
             <Button onClick={handlePrimaryAction}>
-              {authStatus === 'authenticated' ? 'Open workspace' : 'Open sign in'}
+              {authStatus === 'authenticated' ? 'Ouvrir l espace' : 'Ouvrir la connexion'}
             </Button>
           </div>
         </header>
@@ -53,14 +53,14 @@ export default function LandingPage() {
                 Stock, achats, sorties et journal quotidien pour les operations cuisine.
               </h1>
               <p className="mt-6 max-w-2xl text-sm leading-8 text-white/60 md:text-base">
-                Ledger Premium fuses modern financial tooling, Firebase-authenticated access and a showroom-caliber interface inspired by fashion houses and award-winning digital brands.
+                Ledger Premium rassemble les outils financiers modernes, un acces authentifie par Firebase et une interface premium pensee pour le pilotage quotidien d un restaurant.
               </p>
               <p className="mt-4 max-w-2xl text-xs uppercase tracking-[0.24em] text-white/40">
-                Sign in and sign up run through Firebase Auth while workspace data remains stored in MongoDB.
+                La connexion et l inscription passent par Firebase Auth pendant que les donnees metier restent gerees par l application.
               </p>
               <div className="mt-8 flex flex-col gap-4 sm:flex-row">
                 <Button onClick={() => navigate('/login')}>
-                  Go to sign in
+                  Aller a la connexion
                   <ArrowRight size={16} />
                 </Button>
                 <Button onClick={() => window.location.assign('#about')} variant="secondary">
@@ -114,7 +114,7 @@ export default function LandingPage() {
             </Card>
             <Card className="space-y-4">
               <ShieldCheck className="text-accent4" size={18} />
-              <h3 className="text-xl uppercase tracking-[0.16em] text-white">Production security</h3>
+              <h3 className="text-xl uppercase tracking-[0.16em] text-white">Securite de production</h3>
               <p className="text-sm leading-7 text-white/58">
                 Cookies JWT, protection CSRF, validation stricte, roles utilisateur/admin et historique d actions centralise.
               </p>

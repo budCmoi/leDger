@@ -17,7 +17,7 @@ export default function DashboardPage() {
   if (!dashboard || !user) {
     return (
       <Card>
-        <p className="premium-label">Dashboard</p>
+        <p className="premium-label">Tableau de bord</p>
         <p className="mt-4 text-sm text-white/55">Les indicateurs restauration apparaitront ici une fois la session chargee.</p>
       </Card>
     );

@@ -46,17 +46,17 @@ export default function ReportsPage() {
               <input className="rounded-full border border-white/10 bg-white/[0.04] px-4 py-3 text-sm text-white outline-none" max={12} min={1} onChange={(event) => setMonth(Number(event.target.value))} type="number" value={month} />
             </div>
           }
-          description="Generate monthly and annual financial reporting, then export CSV for downstream workflows."
+          description="Genere des rapports financiers mensuels et annuels, puis exporte les donnees en CSV pour les traitements aval."
           eyebrow="Reporting"
-          title="Reports"
+          title="Rapports"
         />
 
         {monthlyReport ? (
           <div className="grid gap-5 md:grid-cols-4">
-            <StatCard currency={user?.currency} label="Monthly revenue" tone="positive" value={monthlyReport.revenue} />
-            <StatCard currency={user?.currency} label="Monthly expenses" tone="negative" value={monthlyReport.expenses} />
-            <StatCard currency={user?.currency} label="Monthly profit" tone="neutral" value={monthlyReport.profit} />
-            <StatCard currency={user?.currency} label="Paid invoices" tone="positive" value={monthlyReport.paidInvoiceTotal} />
+            <StatCard currency={user?.currency} label="Revenu mensuel" tone="positive" value={monthlyReport.revenue} />
+            <StatCard currency={user?.currency} label="Depenses mensuelles" tone="negative" value={monthlyReport.expenses} />
+            <StatCard currency={user?.currency} label="Profit mensuel" tone="neutral" value={monthlyReport.profit} />
+            <StatCard currency={user?.currency} label="Factures payees" tone="positive" value={monthlyReport.paidInvoiceTotal} />
           </div>
         ) : null}
 
@@ -64,11 +64,11 @@ export default function ReportsPage() {
           <Card>
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="premium-label">Monthly report</p>
-                <h2 className="mt-2 text-xl uppercase tracking-[0.16em] text-white">Month {month}, {year}</h2>
+                <p className="premium-label">Rapport mensuel</p>
+                <h2 className="mt-2 text-xl uppercase tracking-[0.16em] text-white">Mois {month}, {year}</h2>
               </div>
               <Button disabled={loading} onClick={() => void reportApi.download('monthly', year, month)} variant="secondary">
-                Download CSV
+                Telecharger le CSV
               </Button>
             </div>
             <div className="mt-6 space-y-3">
@@ -84,17 +84,17 @@ export default function ReportsPage() {
           <Card>
             <div className="flex items-center justify-between gap-4">
               <div>
-                <p className="premium-label">Annual report</p>
-                <h2 className="mt-2 text-xl uppercase tracking-[0.16em] text-white">Year {year}</h2>
+                <p className="premium-label">Rapport annuel</p>
+                <h2 className="mt-2 text-xl uppercase tracking-[0.16em] text-white">Annee {year}</h2>
               </div>
               <Button disabled={loading} onClick={() => void reportApi.download('annual', year)} variant="secondary">
-                Download CSV
+                Telecharger le CSV
               </Button>
             </div>
             <div className="mt-6 space-y-3">
               {annualReport?.monthlyBreakdown.map((item) => (
                 <div className="grid grid-cols-4 gap-3 rounded-[1.5rem] border border-white/8 bg-white/[0.03] px-4 py-4 text-xs uppercase tracking-[0.16em] text-white/65" key={item.month}>
-                  <span>Month {item.month}</span>
+                  <span>Mois {item.month}</span>
                   <span>{formatCurrency(item.revenue, user?.currency)}</span>
                   <span>{formatCurrency(item.expenses, user?.currency)}</span>
                   <span>{formatCurrency(item.profit, user?.currency)}</span>

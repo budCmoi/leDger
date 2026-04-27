@@ -37,7 +37,7 @@ const exchangeCurrentFirebaseSession = async (profile?: { name?: string; company
   const currentUser = auth.currentUser;
 
   if (!currentUser) {
-    throw new Error('No Firebase user is currently signed in.');
+    throw new Error('Aucun utilisateur Firebase n est connecte actuellement.');
   }
 
   const idToken = await currentUser.getIdToken(true);

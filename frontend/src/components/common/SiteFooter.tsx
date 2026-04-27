@@ -6,13 +6,13 @@ export const SiteFooter = () => {
       <div className="mx-auto flex max-w-7xl flex-col gap-6 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
           <p className="premium-label">Ledger Premium</p>
-          <p>Precision for modern finance operators.</p>
+          <p>La precision au service des operations modernes.</p>
         </div>
         <div className="flex flex-wrap items-center gap-5 uppercase tracking-[0.2em] text-white/60">
-          <a href="#about">About</a>
+          <a href="#about">A propos</a>
           <a href="#contact">Contact</a>
-          <a href="#privacy">Privacy Policy</a>
-          <a href="#terms">Terms</a>
+          <a href="#privacy">Confidentialite</a>
+          <a href="#terms">Conditions</a>
         </div>
         <div className="flex items-center gap-4">
           <a href="https://github.com" rel="noreferrer" target="_blank">
@@ -27,7 +27,7 @@ export const SiteFooter = () => {
         </div>
       </div>
       <div className="mx-auto mt-6 max-w-7xl border-t border-white/5 pt-6 text-xs uppercase tracking-[0.22em] text-white/35">
-        Copyright {new Date().getFullYear()} Ledger Premium. All rights reserved.
+        Copyright {new Date().getFullYear()} Ledger Premium. Tous droits reserves.
       </div>
     </footer>
   );

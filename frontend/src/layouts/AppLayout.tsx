@@ -33,7 +33,7 @@ export const AppLayout = () => {
                   <X size={16} />
                 </button>
               </div>
-              <Sidebar companyName={user?.companyName || 'Restaurant Ops'} onNavigate={() => setMobileOpen(false)} />
+              <Sidebar companyName={user?.companyName || 'Operations restauration'} onNavigate={() => setMobileOpen(false)} />
             </DialogPanel>
           </div>
         </Dialog>

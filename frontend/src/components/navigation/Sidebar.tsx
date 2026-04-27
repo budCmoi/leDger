@@ -5,7 +5,7 @@ import { Badge } from '../common/Badge';
 import { cn } from '../../lib/utils';
 
 const navigationItems = [
-  { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
   { to: '/products', label: 'Inventaire', icon: Package },
   { to: '/products/new', label: 'Nouveau produit', icon: Plus },
   { to: '/purchase-invoices', label: 'Entrees', icon: ReceiptText },
@@ -25,9 +25,9 @@ export const Sidebar = ({ companyName, onNavigate }: SidebarProps) => {
       <div className="space-y-4">
         <div>
           <p className="premium-label">Ledger Premium</p>
-          <h2 className="mt-3 text-xl uppercase tracking-[0.32em] text-white">Restaurant Ops</h2>
+          <h2 className="mt-3 text-xl uppercase tracking-[0.32em] text-white">Operations resto</h2>
         </div>
-        <Badge>{companyName ?? 'Secure Workspace'}</Badge>
+        <Badge>{companyName ?? 'Espace securise'}</Badge>
       </div>
 
       <nav className="flex flex-1 flex-col gap-2">

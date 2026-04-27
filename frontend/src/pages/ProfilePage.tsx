@@ -46,9 +46,9 @@ export default function ProfilePage() {
     <PageTransition>
       <div className="space-y-8">
         <SectionHeading
-          description="Manage your identity, workspace details, currency and brand image from a secure account settings surface."
-          eyebrow="Profile"
-          title="Account settings"
+          description="Gere ton identite, les informations de l espace, la devise et l image de marque depuis un espace de compte securise."
+          eyebrow="Profil"
+          title="Parametres du compte"
         />
 
         <div className="grid gap-6 xl:grid-cols-[0.8fr_1.2fr]">

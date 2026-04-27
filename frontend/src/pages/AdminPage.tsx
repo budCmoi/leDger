@@ -100,7 +100,7 @@ export default function AdminPage() {
 
         <Card>
           <div className="space-y-2">
-            <p className="premium-label">Audit trail</p>
+            <p className="premium-label">Journal d audit</p>
             <h2 className="text-xl uppercase tracking-[0.16em] text-white">Dernieres actions</h2>
           </div>
           <div className="mt-6 space-y-3">
